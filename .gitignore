@@ -1,0 +1,22 @@
+# .gitignore --- Configures files to ignore from this Git repository.
+
+# --------------------
+# Generated Files
+# --------------------
+*.aux
+*.fdb_latexmk
+*.fls
+*.ics
+*.log
+*.out
+*.xdv
+*.pdf
+*.tar.gz
+
+
+# --------------------
+# Misc.
+# --------------------
+.DS_Store
+*~
+docker/root/fonts.disabled.d
