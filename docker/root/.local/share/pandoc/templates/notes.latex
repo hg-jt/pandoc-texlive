@@ -1,3 +1,12 @@
+%% notes.latex --- Custom default LaTeX template.
+%%
+%% This template was derived from the default LaTeX template used in Pandoc v2.14.2
+%%
+%% Notable Changes:
+%% - Changed default fonts when template is applied with XeTeX/XeLaTeX.
+%% - Added Listings configuration
+%% - Modernized layout (margins, title, headers, etc.)
+%% - Disabled \maketitle and added fancy headers
 % Options for packages loaded elsewhere
 \PassOptionsToPackage{unicode$for(hyperrefoptions)$,$hyperrefoptions$$endfor$}{hyperref}
 \PassOptionsToPackage{hyphens}{url}
@@ -36,6 +45,94 @@ $for(classoption)$
   $classoption$$sep$,
 $endfor$
 ]{$documentclass$}
+
+
+\usepackage[none]{hyphenat}                  % disable wrapping w/hyphens
+\usepackage[includeheadfoot,margin=1.5cm]{geometry} % TODO move this near the variable check
+\frenchspacing                               % disable additional space after a period
+\usepackage[parfill]{parskip}                % block paragraphs
+\usepackage[sf,it,tiny]{titlesec}            % ss/bf titles w/minimal verticalmargins
+\titleformat*{\section}{\bfseries\sffamily}
+\titleformat*{\subsection}{\itshape\sffamily}
+\titleformat*{\subsubsection}{\sffamily}
+
+\usepackage{etoolbox}
+\AtBeginEnvironment{quote}{\sffamily}
+
+%% --------------------
+%% BEGIN hacks
+%% --------------------
+% preserve @macros and define new global macros that expose the title, subtitle,
+% and date outside of the maketitle command
+\makeatletter
+  \def \title#1{\gdef \@title{#1} \gdef \THETITLE{#1}}
+  \def \author#1{\gdef \@author{#1} \gdef \THEAUTHOR{#1}}
+  \def \date#1{\gdef \@date{#1} \gdef \THEDATE{#1}}
+\makeatother
+%% --------------------
+%% END hacks
+%% --------------------
+
+
+%% --------------------
+%% BEGIN custom title
+%% --------------------
+\usepackage{titling}
+\pretitle{\begin{center}\LARGE\headerfamily\bfseries}
+\posttitle{\par\end{center}}
+
+% comment out if you want to include a by line in the title block
+\preauthor{}
+\postauthor{}
+
+% comment out if you want to include a date in the title block
+\predate{}
+\postdate{}
+
+% raise the title up (negative value). Default is 0.
+\setlength{\droptitle}{-10em}
+%% --------------------
+%% END custom title
+%% --------------------
+
+%% --------------------
+%% BEGIN custom headers/footers
+%% --------------------
+\usepackage{fancyhdr}                        % header and footer control
+\pagestyle{fancy}                            % set header/footer style
+\fancyhf{}                                   % clear header & footer settings
+\fancyhead[L]{\headerfamily{\textbf{\THETITLE}}}
+\fancyhead[R]{\headerfamily{\textit{\THEDATE}}}
+\fancyfoot[C]{\thepage}
+%% --------------------
+%% END customer headers/footers
+%% --------------------
+
+
+%% --------------------
+%% BEGIN pretty-source-code
+%% --------------------
+\usepackage{listings}
+\usepackage{color}
+\usepackage[table]{xcolor}
+\usepackage[font=sf]{caption}
+\usepackage{calc}
+
+\lstset{
+    upquote=true,
+    columns=fullflexible,
+    keepspaces=true,
+    showstringspaces=false,
+    basicstyle=\codefamily\footnotesize,
+    identifierstyle=\codefamily,
+    keywordstyle=\codefamily\bfseries,
+    commentstyle=\color{gray}
+}
+%% --------------------
+%% END pretty-source-code
+%% --------------------
+
+
 $if(beamer)$
 $if(background-image)$
 \usebackgroundtemplate{%
@@ -113,8 +210,44 @@ $if(mathspec)$
 $else$
   \usepackage{unicode-math}
 $endif$
+
+%% --------------------
+%% BEGIN custom fonts
+%% --------------------
+\usepackage{fontspec}
+
+% define custom font families
+\newfontfamily{\headerfamily}[
+  BoldFont={* SemiBold},
+  BoldItalicFont={* SemiBold Italic}
+]{Libre Franklin}
+
+\newfontfamily{\codefamily}[
+  %Scale=0.8462
+  BoldFont={* Semibold},
+  BoldItalicFont={* Semibold Italic}
+]{Source Code Pro}
+%]{IBM Plex Mono}
+
+% set default fonts
+\setsansfont[
+  BoldFont={* SemiBold},
+  BoldItalicFont={* SemiBold Italic}
+]{Libre Franklin}
+
+\setromanfont[
+  Ligatures=TeX,
+  Scale=1,
+  BoldFont={* Bold},
+  ItalicFont={* Italic}
+]{Libre Caslon Text}
+
+\setmonofont[Scale=MatchLowercase]{Source Code Pro}
+%% --------------------
+%% END custom fonts
+%% --------------------
+
   \defaultfontfeatures{Scale=MatchLowercase}
-  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
 $if(mainfont)$
   \setmainfont[$for(mainfontoptions)$$mainfontoptions$$sep$,$endfor$]{$mainfont$}
 $endif$
@@ -461,7 +594,7 @@ $if(title)$
 $if(beamer)$
 \frame{\titlepage}
 $else$
-\maketitle
+%\maketitle
 $endif$
 $if(abstract)$
 \begin{abstract}
