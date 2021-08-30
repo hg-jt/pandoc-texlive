@@ -48,7 +48,10 @@ $endfor$
 
 
 \usepackage[none]{hyphenat}                  % disable wrapping w/hyphens
-\usepackage[includeheadfoot,margin=1.5cm]{geometry} % TODO move this near the variable check
+\usepackage[
+  includeheadfoot,
+  margin=1.5cm
+]{geometry}                                  % smaller margins
 \frenchspacing                               % disable additional space after a period
 \usepackage[parfill]{parskip}                % block paragraphs
 \usepackage[sf,it,tiny]{titlesec}            % ss/bf titles w/minimal verticalmargins
