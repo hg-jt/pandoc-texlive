@@ -211,12 +211,15 @@ $endif$
   BoldItalicFont={* SemiBold Italic}
 ]{Libre Franklin}
 
+$if(codefont)$
+\newfontfamily{\codefamily}[$for(codefontoptions)$$codefontoptions$$sep$,$endfor$]{$codefont$}
+$else$
 \newfontfamily{\codefamily}[
   %Scale=0.8462
   BoldFont={* Semibold},
   BoldItalicFont={* Semibold Italic}
 ]{Source Code Pro}
-%]{IBM Plex Mono}
+$endif$
 
 % set default fonts
 \setsansfont[

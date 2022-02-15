@@ -60,7 +60,7 @@ $endfor$
 \titleformat*{\subsubsection}{\sffamily}
 
 \usepackage{etoolbox}
-\AtBeginEnvironment{quote}{\sffamily}
+\AtBeginEnvironment{quote}{\itshape\ttfamily}
 
 %% --------------------
 %% BEGIN hacks
@@ -69,6 +69,7 @@ $endfor$
 % and date outside of the maketitle command
 \makeatletter
   \def \title#1{\gdef \@title{#1} \gdef \THETITLE{#1}}
+  \def \subtitle#1{\gdef \@subtitle{#1} \gdef \THESUBTITLE{#1}}
   \def \author#1{\gdef \@author{#1} \gdef \THEAUTHOR{#1}}
   \def \date#1{\gdef \@date{#1} \gdef \THEDATE{#1}}
 \makeatother
@@ -105,6 +106,9 @@ $endfor$
 \pagestyle{fancy}                            % set header/footer style
 \fancyhf{}                                   % clear header & footer settings
 \fancyhead[L]{\headerfamily{\textbf{\THETITLE}}}
+$if(subtitle)$
+\fancyhead[C]{\headerfamily{\THESUBTITLE}}
+$endif$
 \fancyhead[R]{\headerfamily{\textit{\THEDATE}}}
 \fancyfoot[C]{\thepage}
 %% --------------------
@@ -225,12 +229,15 @@ $endif$
   BoldItalicFont={* SemiBold Italic}
 ]{Libre Franklin}
 
+$if(codefont)$
+\newfontfamily{\codefamily}[$for(codefontoptions)$$codefontoptions$$sep$,$endfor$]{$codefont$}
+$else$
 \newfontfamily{\codefamily}[
   %Scale=0.8462
   BoldFont={* Semibold},
   BoldItalicFont={* Semibold Italic}
 ]{Source Code Pro}
-%]{IBM Plex Mono}
+$endif$
 
 % set default fonts
 \setsansfont[
@@ -250,10 +257,11 @@ $endif$
 %% END custom fonts
 %% --------------------
 
-  \defaultfontfeatures{Scale=MatchLowercase}
 $if(mainfont)$
   \setmainfont[$for(mainfontoptions)$$mainfontoptions$$sep$,$endfor$]{$mainfont$}
 $endif$
+\defaultfontfeatures{Scale=MatchLowercase}
+
 $if(sansfont)$
   \setsansfont[$for(sansfontoptions)$$sansfontoptions$$sep$,$endfor$]{$sansfont$}
 $endif$
