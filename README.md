@@ -12,13 +12,13 @@ tools and packages. The image's default entry point is `pandoc`.
 In addition to what the Tex Live distribution packages, the following open
 source fonts are included:
 
-| Name                                                                      | License     |
-| ------------------------------------------------------------------------- | ----------- |
-| [Adobe Source Code Pro](https://github.com/adobe-fonts/source-code-pro)   | [OFL 1.1]   |
-| [Adobe Source Sans 3](https://github.com/adobe-fonts/source-sans-pro)     | [OFL 1.1]   |
-| [Adobe Source Serif 4](https://github.com/adobe-fonts/source-serif-pro)   | [OFL 1.1]   |
-| [Libre Caslon Text](https://github.com/impallari/Libre-Caslon-Text)       | [OFL 1.1]   |
-| [Libre Franklin](https://github.com/impallari/Libre-Franklin)             | [OFL 1.1]   |
+| Name                                                                    | Font Family Name  | License   |
+|-------------------------------------------------------------------------|-------------------|-----------|
+| [Adobe Source Code Pro](https://github.com/adobe-fonts/source-code-pro) | Source Code Pro   | [OFL 1.1] |
+| [Adobe Source Sans 3](https://github.com/adobe-fonts/source-sans-pro)   | Source Sans 3     | [OFL 1.1] |
+| [Adobe Source Serif 4](https://github.com/adobe-fonts/source-serif-pro) | Source Serif 4    | [OFL 1.1] |
+| [Libre Caslon Text](https://github.com/impallari/Libre-Caslon-Text)     | Libre Caslon Text | [OFL 1.1] |
+| [Libre Franklin](https://github.com/impallari/Libre-Franklin)           | Libre Franklin    | [OFL 1.1] |
 
 [OFL 1.1]: https://opensource.org/licenses/OFL-1.1
 
