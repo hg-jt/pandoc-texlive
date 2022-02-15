@@ -17,6 +17,7 @@ source fonts are included:
 | [Adobe Source Code Pro](https://github.com/adobe-fonts/source-code-pro) | Source Code Pro   | [OFL 1.1] |
 | [Adobe Source Sans 3](https://github.com/adobe-fonts/source-sans-pro)   | Source Sans 3     | [OFL 1.1] |
 | [Adobe Source Serif 4](https://github.com/adobe-fonts/source-serif-pro) | Source Serif 4    | [OFL 1.1] |
+| [IBM Plex](https://github.com/IBM/plex)                                 | IBM Plex          | [OFL 1.1] |
 | [Libre Caslon Text](https://github.com/impallari/Libre-Caslon-Text)     | Libre Caslon Text | [OFL 1.1] |
 | [Libre Franklin](https://github.com/impallari/Libre-Franklin)           | Libre Franklin    | [OFL 1.1] |
 
