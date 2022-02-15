@@ -29,7 +29,7 @@ apt-get install -y --no-install-recommends \
 # ----------------------------------------
 # Install Pandoc
 # ----------------------------------------
-PANDOC_VERSION=2.14.2
+PANDOC_VERSION=2.17.1.1
 curl -L -O https://github.com/jgm/pandoc/releases/download/$PANDOC_VERSION/pandoc-$PANDOC_VERSION-1-amd64.deb
 apt-get install -y ./pandoc-$PANDOC_VERSION-1-amd64.deb
 rm pandoc-$PANDOC_VERSION-1-amd64.deb
