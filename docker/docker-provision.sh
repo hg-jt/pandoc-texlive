@@ -27,9 +27,21 @@ apt-get install -y --no-install-recommends \
 
 
 # ----------------------------------------
+# Install Lua Filters & GraphViz
+# ----------------------------------------
+PANDOC_DIR=/root/.local/share/pandoc
+RELEASE_URL=https://github.com/pandoc/lua-filters/releases/latest
+
+apt-get install -y graphviz librsvg2-bin
+curl -LSs \
+     $RELEASE_URL/download/lua-filters.tar.gz | \
+     tar --strip-components=1 --one-top-level=$PANDOC_DIR -zvxf -
+
+
+# ----------------------------------------
 # Install Pandoc
 # ----------------------------------------
-PANDOC_VERSION=2.17.1.1
+PANDOC_VERSION=2.18
 curl -L -O https://github.com/jgm/pandoc/releases/download/$PANDOC_VERSION/pandoc-$PANDOC_VERSION-1-amd64.deb
 apt-get install -y ./pandoc-$PANDOC_VERSION-1-amd64.deb
 rm pandoc-$PANDOC_VERSION-1-amd64.deb
