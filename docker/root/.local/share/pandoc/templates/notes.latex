@@ -60,7 +60,9 @@ $endfor$
 \titleformat*{\subsubsection}{\sffamily}
 
 \usepackage{etoolbox}
-\AtBeginEnvironment{quote}{\itshape\ttfamily}
+\AtBeginEnvironment{quote}{\itshape\sffamily}  % quote block styling
+\AtBeginEnvironment{minipage}{\sffamily}       % table styling
+
 
 %% --------------------
 %% BEGIN hacks
@@ -123,6 +125,8 @@ $endif$
 \usepackage{color}
 \usepackage[table]{xcolor}
 \usepackage[font=sf]{caption}
+\captionsetup{labelformat=empty}             % Remove "Figure" & "Listing" prefix
+
 \usepackage{calc}
 
 \lstset{
@@ -130,11 +134,15 @@ $endif$
     columns=fullflexible,
     keepspaces=true,
     showstringspaces=false,
-    basicstyle=\codefamily\footnotesize,
+    literate=*{*}{\codefamily{*}}1,          % fix awkwardly low asterix
+    basicstyle=\codefamily,
     identifierstyle=\codefamily,
     keywordstyle=\codefamily\bfseries,
-    commentstyle=\color{gray}
+    commentstyle=\color{gray},
+    xleftmargin=.25cm,
+    escapeinside={(*}{*)}                    % allow latex code in listing
 }
+
 %% --------------------
 %% END pretty-source-code
 %% --------------------
