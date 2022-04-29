@@ -1,0 +1,91 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}                 % 1 inch margins
+\usepackage[parfill]{parskip}                     % block paragraphs
+\frenchspacing                                    % disable additional space after a period
+\usepackage[none]{hyphenat}                       % disable wrapping w/hyphens
+\usepackage[sf,bf,tiny,compact]{titlesec}         % ss/bf titles w/minimal top & bottom margins
+\usepackage{hyperref}
+\hypersetup{                                      % document metadata
+  pdfauthor={John Doe},
+  pdfcreator={},
+  pdfkeywords={},
+  pdflang={English},
+  pdfsubject={LaTeX Example},
+  pdftitle={Simple Document}
+}
+
+%% BEGIN fonts
+\usepackage{fontspec}
+\newfontfamily{\codefamily}[
+  BoldFont={* Semibold},
+  BoldItalicFont={* Semibold Italic},
+  Scale=MatchLowercase
+]{Source Code Pro}
+
+\defaultfontfeatures{Ligatures=TeX}
+\setromanfont{Libre Caslon Text}
+\setmonofont{Source Code Pro}
+\setsansfont[
+  BoldFont={* SemiBold},
+  BoldItalicFont={* SemiBold Italic}
+]{Libre Franklin}
+%% END fonts
+
+%% BEGIN title formatting
+\usepackage{titling}                              % better control over the title block
+\setlength{\droptitle}{-10em}                     % raise the title up (negative value). Default is 0.
+\pretitle{\begin{center}\LARGE\sffamily\bfseries} % Large, bold, sans-serif title
+\posttitle{\par\end{center}}
+\preauthor{}\postauthor{}                         % clear formatting for author
+\predate{}\postdate{}                             % clear formatting for date
+\titleformat*{\section}{\bfseries\sffamily}
+\titleformat*{\subsection}{\itshape\sffamily}
+\titleformat*{\subsubsection}{\sffamily}
+%% END title formatting
+
+%% BEGIN pretty-source-code
+\usepackage{listings}
+\usepackage{color}
+\usepackage[table]{xcolor}
+\usepackage[font=sf]{caption}
+\usepackage{calc}
+
+\lstset{
+    upquote=true,
+    columns=fullflexible,
+    keepspaces=true,
+    showstringspaces=false,
+    basicstyle=\codefamily\footnotesize,
+    identifierstyle=\codefamily,
+    keywordstyle=\codefamily\bfseries,
+    commentstyle=\color{gray}
+}
+%% END pretty-source-code
+
+\usepackage{lipsum}                               % sample text generator
+
+\title{Simple Document}
+\author{}
+\date{}
+
+\begin{document}
+\raggedright
+\maketitle
+
+\section*{First Section}
+\lipsum[1-2]
+
+\begin{lstlisting}[language=Python]
+
+class Dog:
+    def __init__(self, name: str, paw_count: int):
+        self.name: str = name
+        self._paw_count: int = paw_count
+
+    def paws(self) -> int:
+        return self._paw_count
+\end{lstlisting}
+
+\section*{Second Section}
+\lipsum[3-5]
+\end{document}

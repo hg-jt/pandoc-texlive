@@ -7,8 +7,6 @@ for generating PDFs with Pandoc and/or XeLaTeX. The configuration is centered
 around an installation of TeX Live which provides XeLaTeX and it's supporting
 tools and packages. The image's default entry point is `pandoc`.
 
-> *NOTE*: For details about how to use this image see the use cases below.
-
 In addition to what the Tex Live distribution packages, the following open
 source fonts are included:
 
@@ -29,15 +27,102 @@ source fonts are included:
 > OTF fonts and */usr/share/fonts/truetype* for TTF fonts).
 >
 >     docker run --rm -it \
->       -v <path to your local fonts>:/usr/share/fonts/truetype:/usr/share/fonts/truetype \
->       hgjt/pandoc-texlive:latest
+>       -v <path to your local fonts>:/usr/share/fonts/truetype \
+>       ghcr.io/hg-jt/pandoc-texlive:main
 
 
-## Docker
+## Usage
 
-### Building a *pandoc-texlive* Docker image
+Container images for this project are published to GitHub Packages. The image
+name is:
 
-To build the image:
+```
+ghcr.io/hg-jt/pandoc-texlive:<tag>
+```
+
+The `<tag>` can be either a branch name or a tag name. To use the container in a
+similar fashion to a local install of pandoc, you will want to mount a local
+volume with your current working directory.
+
+
+For example:
+
+```sh
+docker run \
+       --rm -it
+       -v "$(pwd)":/docs \
+       ghcr.io/hg-jt/pandoc-texlive:main [OPTIONS]
+```
+
+To save some typing you can set the above command to a shell alias:
+
+```sh
+alias pandoc='docker run -v "$(pwd)":/docs --rm -it ghcr.io/hg-jt/pandoc-texlive:main'
+```
+
+[GitHub Packages]: https://github.com/hg-jt?tab=packages&repo_name=pandoc-texlive
+
+
+### Generating PDFs
+
+This projects includes both Pandoc and TexLive in a container for the purpose of
+generating PDFs from markdown files. For example, to generate a PDF of this
+README file:
+
+```sh
+docker run \
+       --rm -it
+       -v "$(pwd)":/docs \
+       ghcr.io/hg-jt/pandoc-texlive:main \
+       -i README.md \
+       -o README.pdf
+```
+
+This command uses Pandoc's default LaTeX template to generate a PDF. The results
+can be customized by setting certain CLI options and/or by using a YAML header
+in the source file to set relevant parameters.
+
+> *NOTE*: In practice, if you are using this image to generate PDFs, you likely
+> want to set the PDF engine to XeLaTeX and enable the listings package at a
+> minimum:
+>
+> ```sh
+> docker run \
+>        --rm -it
+>        -v "$(pwd)":/docs \
+>        ghcr.io/hg-jt/pandoc-texlive:main \
+>        --pdf-engine=xelatex \
+>        --listings \
+>        -i README.md \
+>        -o README.pdf
+> ```
+
+
+An alternative approach to customizing the output is to use custom templates.
+One custom template, "notes", is provided with the image. The *notes* template
+assumes that title has been set.
+
+```sh
+docker run \
+       --rm \
+       -it \
+       -v "$(pwd)":/docs \
+       ghcr.io/hg-jt/pandoc-texlive:main \
+       --template notes \
+       --pdf-engine=xelatex \
+       --listings \
+       -V title='README (pandoc-texlive)'
+       -i README.md \
+       -o README.pdf
+```
+
+See the examples directory for [examples](examples/README.md) of using header
+metadata and templates.
+
+
+## Development
+
+To build the image for local testing:
 
 ```sh
 make build
