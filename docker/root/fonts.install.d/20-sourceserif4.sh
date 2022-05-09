@@ -2,7 +2,9 @@
 # Name: Adobe Source Serif 4
 # License: SIL OFL 1.1
 # License URL: https://github.com/adobe-fonts/source-serif/blob/release/LICENSE.md
-curl -L -O https://github.com/adobe-fonts/source-serif/archive/refs/tags/4.004R.tar.gz
-tar xzf 4.004R.tar.gz
-mv source-serif-4.004R/OTF /usr/share/fonts/opentype/sourceserif4
-mv source-serif-4.004R/LICENSE.md /usr/share/fonts/opentype/sourceserif4
+VERSION=4.004R
+
+curl -L -O https://github.com/adobe-fonts/source-serif/archive/refs/tags/$VERSION.tar.gz
+tar xzf $VERSION.tar.gz
+mv source-serif-$VERSION/OTF /usr/share/fonts/opentype/sourceserif4
+mv source-serif-$VERSION/LICENSE.md /usr/share/fonts/opentype/sourceserif4

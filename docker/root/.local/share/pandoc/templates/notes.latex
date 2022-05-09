@@ -59,6 +59,11 @@ $endfor$
 \titleformat*{\subsection}{\itshape\sffamily}
 \titleformat*{\subsubsection}{\sffamily}
 
+% alternate nested unordered lists w/bullets and endashes
+\renewcommand{\labelitemii}{--}
+\renewcommand{\labelitemiii}{\textbullet}
+\renewcommand{\labelitemiv}{--}
+
 \usepackage{etoolbox}
 \AtBeginEnvironment{quote}{\itshape\sffamily}  % quote block styling
 \AtBeginEnvironment{minipage}{\sffamily}       % table styling
@@ -257,8 +262,9 @@ $endif$
   Ligatures=TeX,
   Scale=1,
   BoldFont={* Bold},
-  ItalicFont={* Italic}
-]{Libre Caslon Text}
+  ItalicFont={* Italic},
+  BoldItalicFont={* Bold Italic}
+]{Charis SIL}
 
 \setmonofont[Scale=MatchLowercase]{Source Code Pro}
 %% --------------------
