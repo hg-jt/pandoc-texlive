@@ -64,9 +64,21 @@ $endfor$
 \renewcommand{\labelitemiii}{\textbullet}
 \renewcommand{\labelitemiv}{--}
 
+\usepackage{mdframed}
+\global\mdfdefinestyle{blockquote}{
+  topline=false,
+  rightline=false,
+  bottomline=false,
+  leftline=false,
+  backgroundcolor=gray!20
+}
+
 \usepackage{etoolbox}
-\AtBeginEnvironment{quote}{\itshape\sffamily}  % quote block styling
-\AtBeginEnvironment{minipage}{\sffamily}       % table styling
+%\AtBeginEnvironment{quote}{\itshape\sffamily}  % quote block styling
+\patchcmd{\quote}{\rightmargin}{\leftmargin 0em \rightmargin}{}{}  % reduce quote indent
+\AtBeginEnvironment{quote}{\sffamily\noindent\begin{mdframed}[style=blockquote]}
+\AtEndEnvironment{quote}{\end{mdframed}}
+\AtBeginEnvironment{minipage}{\sffamily}      % table header styling
 
 
 %% --------------------
@@ -246,7 +258,16 @@ $if(codefont)$
 \newfontfamily{\codefamily}[$for(codefontoptions)$$codefontoptions$$sep$,$endfor$]{$codefont$}
 $else$
 \newfontfamily{\codefamily}[
-  %Scale=0.8462
+  %Scale=0.8462,
+  %Scale=MatchUppercase,
+  Scale=1,
+  BoldFont={* Semibold},
+  BoldItalicFont={* Semibold Italic}
+]{Source Code Pro}
+
+\newfontfamily{\inlinecodefamily}[
+  %Scale=0.8462,
+  Scale=MatchUppercase,
   BoldFont={* Semibold},
   BoldItalicFont={* Semibold Italic}
 ]{Source Code Pro}
@@ -267,6 +288,11 @@ $endif$
 ]{Charis SIL}
 
 \setmonofont[Scale=MatchLowercase]{Source Code Pro}
+
+% separate lstinline and lstlistings
+\makeatletter
+\lst@AddToHook{TextStyle}{\let\lst@basicstyle\inlinecodefamily\selectfont}
+\makeatother
 %% --------------------
 %% END custom fonts
 %% --------------------
