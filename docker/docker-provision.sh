@@ -70,6 +70,14 @@ cd /
 rm -r /tmp/fonts
 
 
+# ----------------------------------------
+# Configure non-root user
+# ----------------------------------------
+useradd -ms /bin/bash pandoc
+mv /root/.local /home/pandoc
+chown -r pandoc: /home/pandoc/.local
+
+
 # clean up os packages
 apt-get purge -y curl unzip
 apt-get clean -y
