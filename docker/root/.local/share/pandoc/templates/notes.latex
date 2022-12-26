@@ -55,9 +55,10 @@ $endfor$
 \frenchspacing                               % disable additional space after a period
 \usepackage[parfill]{parskip}                % block paragraphs
 \usepackage[sf,it,tiny]{titlesec}            % ss/bf titles w/minimal verticalmargins
-\titleformat*{\section}{\bfseries\sffamily}
-\titleformat*{\subsection}{\itshape\sffamily}
-\titleformat*{\subsubsection}{\sffamily}
+\titleformat*{\section}{\large\bfseries\sffamily}
+\titleformat*{\subsection}{\bfseries\sffamily}
+\titleformat*{\subsubsection}{\small\bfseries\sffamily}  %\itshape\sffamily
+\titleformat{\paragraph}[hang]{\small\itshape\sffamily}{\theparagraph}{}{}
 
 % alternate nested unordered lists w/bullets and endashes
 \renewcommand{\labelitemii}{--}
@@ -159,6 +160,10 @@ $endif$
     xleftmargin=.25cm,
     escapeinside={(*}{*)}                    % allow latex code in listing
 }
+
+%% https://isocpp.org/wiki/faq/misc-environmental-issues#latex-macros
+\newcommand{\CC}{C\nolinebreak\hspace{-.05em}\raisebox{.4ex}{\tiny\bf +}\nolinebreak\hspace{-.10em}\raisebox{.4ex}{\tiny\bf +}}
+%\def\CC{{C\nolinebreak[4]\hspace{-.05em}\raisebox{.4ex}{\tiny\bf ++}}}
 
 %% --------------------
 %% END pretty-source-code
@@ -299,6 +304,8 @@ $endif$
 
 $if(mainfont)$
   \setmainfont[$for(mainfontoptions)$$mainfontoptions$$sep$,$endfor$]{$mainfont$}
+$else$
+\renewcommand{\familydefault}{\sfdefault} % ss by default
 $endif$
 \defaultfontfeatures{Scale=MatchLowercase}
 
