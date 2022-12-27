@@ -280,9 +280,9 @@ $endif$
 
 % set default fonts
 \setsansfont[
-  BoldFont={* SemiBold},
-  BoldItalicFont={* SemiBold Italic}
-]{Libre Franklin}
+  BoldFont={*-Medium},
+  BoldItalicFont={*-Medium Italic}
+]{IBM Plex Sans}
 
 \setromanfont[
   Ligatures=TeX,
