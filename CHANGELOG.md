@@ -23,6 +23,11 @@ project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - *Notes Template*: Changed default font to sans serif (IBM Plex Sans)
 - *Notes Template*: Template cleanup.
 
+### Removed
+
+- Removed "report" and "techdoc" templates.
+
+
 ## [20220530]
 
 ### Added
