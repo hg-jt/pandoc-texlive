@@ -1,3 +1,12 @@
+%% betterdefault.latex --- Custom default LaTeX template.
+%%
+%% This template was derived from the default LaTeX template used in Pandoc
+%% v2.19.2.
+%% 
+%% This template attempts to preserve the flexibility of the default LaTeX
+%% template while making the end result look more modern (e.g. smaller margins,
+%% contemporary font choices, "French spacing", etc.)
+
 % Options for packages loaded elsewhere
 \PassOptionsToPackage{unicode$for(hyperrefoptions)$,$hyperrefoptions$$endfor$}{hyperref}
 \PassOptionsToPackage{hyphens}{url}
@@ -28,6 +37,7 @@ $for(classoption)$
   $classoption$$sep$,
 $endfor$
 ]{$documentclass$}
+
 $if(beamer)$
 $if(background-image)$
 \usebackgroundtemplate{%
@@ -105,11 +115,67 @@ $if(mathspec)$
 $else$
   \usepackage{unicode-math}
 $endif$
-  \defaultfontfeatures{Scale=MatchLowercase}
-  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+
+
+%% --------------------
+%% BEGIN custom fonts
+%% --------------------
+\usepackage{fontspec}
+
+\defaultfontfeatures{Scale=MatchLowercase}
+%  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+
+% define custom font families
+\newfontfamily{\headerfamily}[
+  BoldFont={* SemiBold},
+  BoldItalicFont={* SemiBold Italic}
+]{Libre Franklin}
+
+$if(codefont)$
+\newfontfamily{\codefamily}[$for(codefontoptions)$$codefontoptions$$sep$,$endfor$]{$codefont$}
+$else$
+\newfontfamily{\codefamily}[
+  %Scale=0.8462,
+  %Scale=MatchUppercase,
+  Scale=1,
+  BoldFont={* Semibold},
+  BoldItalicFont={* Semibold Italic}
+]{Source Code Pro}
+
+\newfontfamily{\inlinecodefamily}[
+  %Scale=0.8462,
+  Scale=MatchUppercase,
+  BoldFont={* Semibold},
+  BoldItalicFont={* Semibold Italic}
+]{Source Code Pro}
+$endif$
+
+% set default fonts
+\setsansfont[
+  BoldFont={*-Medium},
+  BoldItalicFont={*-Medium Italic}
+]{IBM Plex Sans}
+
+\setromanfont[
+  Ligatures=TeX,
+  Scale=1,
+  BoldFont={* Bold},
+  ItalicFont={* Italic},
+  BoldItalicFont={* Bold Italic}
+]{Charis SIL}
+
+\setmonofont[Scale=MatchLowercase]{Source Code Pro}
+%% --------------------
+%% END custom fonts
+%% --------------------
+  
 $if(mainfont)$
   \setmainfont[$for(mainfontoptions)$$mainfontoptions$$sep$,$endfor$]{$mainfont$}
+$else$
+% \renewcommand{\familydefault}{\sfdefault} % ss by default
 $endif$
+
+
 $if(sansfont)$
   \setsansfont[$for(sansfontoptions)$$sansfontoptions$$sep$,$endfor$]{$sansfont$}
 $endif$
@@ -167,6 +233,98 @@ $if(zero-width-non-joiner)$
 \fi
 %% End of ZWNJ support
 $endif$
+
+%% --------------------
+%% BEGIN custom document configuration
+%% --------------------
+\usepackage[none]{hyphenat}                  % disable wrapping w/hyphens
+\usepackage[
+  includeheadfoot,
+  margin=1.5cm
+]{geometry}                                  % smaller margins
+\frenchspacing                               % disable additional space after a period
+\usepackage[parfill]{parskip}                % block paragraphs
+\usepackage[sf,it,tiny]{titlesec}            % ss/bf titles w/minimal verticalmargins
+\titleformat*{\section}{\large\bfseries\headerfamily}
+\titleformat*{\subsection}{\bfseries\headerfamily}
+\titleformat*{\subsubsection}{\small\bfseries\headerfamily}
+\titleformat{\paragraph}[hang]{\small\itshape\headerfamily}{\theparagraph}{}{}
+
+% alternate nested unordered lists w/bullets and endashes
+\renewcommand{\labelitemii}{--}
+\renewcommand{\labelitemiii}{\textbullet}
+\renewcommand{\labelitemiv}{--}
+%% --------------------
+%% END custom document configuration
+%% --------------------
+
+
+%% --------------------
+%% BEGIN custom title
+%% --------------------
+\usepackage{titling}
+\pretitle{\begin{center}\LARGE\headerfamily\bfseries}
+
+% raise the title up (negative value). Default is 0.
+\setlength{\droptitle}{-10em}
+%% --------------------
+%% END custom title
+%% --------------------
+
+
+%% --------------------
+%% BEGIN hacks
+%% --------------------
+% preserve @macros and define new global macros that expose the title, subtitle,
+% and date outside of the maketitle command
+\makeatletter
+  \def \title#1{\gdef \@title{#1} \gdef \THETITLE{#1}}
+  \def \subtitle#1{\gdef \@subtitle{#1} \gdef \THESUBTITLE{#1}}
+  \def \author#1{\gdef \@author{#1} \gdef \THEAUTHOR{#1}}
+  \def \date#1{\gdef \@date{#1} \gdef \THEDATE{#1}}
+\makeatother
+%% --------------------
+%% END hacks
+%% --------------------
+
+
+%% --------------------
+%% BEGIN pretty-source-code
+%% --------------------
+\usepackage{listings}
+\usepackage{color}
+\usepackage[table]{xcolor}
+\usepackage[font=sf]{caption}
+\captionsetup{labelformat=empty}             % Remove "Figure" & "Listing" prefix
+
+\usepackage{calc}
+
+\lstset{
+    upquote=true,
+    columns=fullflexible,
+    keepspaces=true,
+    showstringspaces=false,
+    literate=*{*}{\codefamily{*}}1,          % fix awkwardly low asterix
+    basicstyle=\codefamily,
+    identifierstyle=\codefamily,
+    keywordstyle=\codefamily\bfseries,
+    commentstyle=\color{gray},
+    xleftmargin=.25cm,
+    escapeinside={(*}{*)}                    % allow latex code in listing
+}
+
+%% https://isocpp.org/wiki/faq/misc-environmental-issues#latex-macros
+\newcommand{\CC}{C\nolinebreak\hspace{-.05em}\raisebox{.4ex}{\tiny\bf +}\nolinebreak\hspace{-.10em}\raisebox{.4ex}{\tiny\bf +}}
+%\def\CC{{C\nolinebreak[4]\hspace{-.05em}\raisebox{.4ex}{\tiny\bf ++}}}
+
+% separate lstinline and lstlistings
+\makeatletter
+\lst@AddToHook{TextStyle}{\let\lst@basicstyle\inlinecodefamily\selectfont}
+\makeatother
+%% --------------------
+%% END pretty-source-code
+%% --------------------
+
 $if(beamer)$
 $if(theme)$
 \usetheme[$for(themeoptions)$$themeoptions$$sep$,$endfor$]{$theme$}
