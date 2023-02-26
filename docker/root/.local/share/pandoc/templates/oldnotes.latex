@@ -1,43 +1,64 @@
-%% notes.latex --- LaTeX template for simple notes.
-
+%% notes.latex --- Custom default LaTeX template.
+%%
+%% This template was derived from the default LaTeX template used in Pandoc v2.14.2
+%%
+%% Notable Changes:
+%% - Changed default fonts when template is applied with XeTeX/XeLaTeX.
+%% - Added Listings configuration
+%% - Modernized layout (margins, title, headers, etc.)
+%% - Disabled \maketitle and added fancy headers
 % Options for packages loaded elsewhere
-\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{unicode$for(hyperrefoptions)$,$hyperrefoptions$$endfor$}{hyperref}
 \PassOptionsToPackage{hyphens}{url}
+$if(colorlinks)$
 \PassOptionsToPackage{dvipsnames,svgnames,x11names}{xcolor}
-
+$endif$
+$if(dir)$
+$if(latex-dir-rtl)$
+\PassOptionsToPackage{RTLdocument}{bidi}
+$endif$
+$endif$
+$if(CJKmainfont)$
+\PassOptionsToPackage{space}{xeCJK}
+$endif$
+%
 \documentclass[
 $if(fontsize)$
   $fontsize$,
 $endif$
+$if(lang)$
+  $babel-lang$,
+$endif$
 $if(papersize)$
   $papersize$paper,
+$endif$
+$if(beamer)$
+  ignorenonframetext,
+$if(handout)$
+  handout,
+$endif$
+$if(aspectratio)$
+  aspectratio=$aspectratio$,
+$endif$
 $endif$
 $for(classoption)$
   $classoption$$sep$,
 $endfor$
 ]{$documentclass$}
 
-%% --------------------
-%% BEGIN custom document configuration
-%% --------------------
-\usepackage[none]{hyphenat}                  % disable wrapping w/hyphens
 
-$if(geometry)$
-\usepackage[$for(geometry)$$geometry$$sep$,$endfor$]{geometry}
-$else$
+\usepackage[none]{hyphenat}                  % disable wrapping w/hyphens
 \usepackage[
   includeheadfoot,
   margin=1.5cm
 ]{geometry}                                  % smaller margins
-$endif$
-
 \frenchspacing                               % disable additional space after a period
 \usepackage[parfill]{parskip}                % block paragraphs
 \usepackage[sf,it,tiny]{titlesec}            % ss/bf titles w/minimal verticalmargins
-\titleformat*{\section}{\large\bfseries\headerfamily}
-\titleformat*{\subsection}{\bfseries\headerfamily}
-\titleformat*{\subsubsection}{\small\bfseries\headerfamily}
-\titleformat{\paragraph}[hang]{\small\itshape\headerfamily}{\theparagraph}{}{}
+\titleformat*{\section}{\large\bfseries\sffamily}
+\titleformat*{\subsection}{\bfseries\sffamily}
+\titleformat*{\subsubsection}{\small\bfseries\sffamily}  %\itshape\sffamily
+\titleformat{\paragraph}[hang]{\small\itshape\sffamily}{\theparagraph}{}{}
 
 % alternate nested unordered lists w/bullets and endashes
 \renewcommand{\labelitemii}{--}
@@ -54,14 +75,11 @@ $endif$
 }
 
 \usepackage{etoolbox}
-\patchcmd{\quote}{\rightmargin}{\leftmargin 0em \rightmargin}{}{}  % reduce quote indent
 %\AtBeginEnvironment{quote}{\itshape\sffamily}  % quote block styling
+\patchcmd{\quote}{\rightmargin}{\leftmargin 0em \rightmargin}{}{}  % reduce quote indent
 \AtBeginEnvironment{quote}{\sffamily\noindent\begin{mdframed}[style=blockquote]}
 \AtEndEnvironment{quote}{\end{mdframed}}
 \AtBeginEnvironment{minipage}{\sffamily}      % table header styling
-%% --------------------
-%% END custom document configuration
-%% --------------------
 
 
 %% --------------------
@@ -121,12 +139,6 @@ $endif$
 %% --------------------
 %% BEGIN pretty-source-code
 %% --------------------
-$if(listings)$
-\usepackage{listings}
-\newcommand{\passthrough}[1]{#1}
-\lstset{defaultdialect=[5.3]Lua}
-\lstset{defaultdialect=[x86masm]Assembler}
-
 \usepackage{listings}
 \usepackage{color}
 \usepackage[table]{xcolor}
@@ -134,8 +146,6 @@ $if(listings)$
 \captionsetup{labelformat=empty}             % Remove "Figure" & "Listing" prefix
 
 \usepackage{calc}
-
-%\renewcommand{\ttdefault}{\codefamily}
 
 \lstset{
     upquote=true,
@@ -146,7 +156,6 @@ $if(listings)$
     basicstyle=\codefamily,
     identifierstyle=\codefamily,
     keywordstyle=\codefamily\bfseries,
-    %keywordstyle=\ttfamily\bfseries,
     commentstyle=\color{gray},
     xleftmargin=.25cm,
     escapeinside={(*}{*)}                    % allow latex code in listing
@@ -156,37 +165,70 @@ $if(listings)$
 \newcommand{\CC}{C\nolinebreak\hspace{-.05em}\raisebox{.4ex}{\tiny\bf +}\nolinebreak\hspace{-.10em}\raisebox{.4ex}{\tiny\bf +}}
 %\def\CC{{C\nolinebreak[4]\hspace{-.05em}\raisebox{.4ex}{\tiny\bf ++}}}
 
-% separate lstinline and lstlistings
-\makeatletter
-\lst@AddToHook{TextStyle}{\let\lst@basicstyle\inlinecodefamily\selectfont}
-\makeatother
-
-% better inline asterix
-\makeatletter
-\lst@CCPutMacro
-    \lst@ProcessOther {"2A}{%
-      \lst@codefamily 
-         {\raisebox{2pt}{*}}% used with ttfamily
-         \textasteriskcentered}% used with other fonts
-    \@empty\z@\@empty
-\makeatother
-$endif$  
-
 %% --------------------
 %% END pretty-source-code
 %% --------------------
 
 
-%% --------------------
-%% BEGIN math
-%% --------------------
+$if(beamer)$
+$if(background-image)$
+\usebackgroundtemplate{%
+  \includegraphics[width=\paperwidth]{$background-image$}%
+}
+$endif$
+\usepackage{pgfpages}
+\setbeamertemplate{caption}[numbered]
+\setbeamertemplate{caption label separator}{: }
+\setbeamercolor{caption name}{fg=normal text.fg}
+\beamertemplatenavigationsymbols$if(navigation)$$navigation$$else$empty$endif$
+$for(beameroption)$
+\setbeameroption{$beameroption$}
+$endfor$
+% Prevent slide breaks in the middle of a paragraph
+\widowpenalties 1 10000
+\raggedbottom
+$if(section-titles)$
+\setbeamertemplate{part page}{
+  \centering
+  \begin{beamercolorbox}[sep=16pt,center]{part title}
+    \usebeamerfont{part title}\insertpart\par
+  \end{beamercolorbox}
+}
+\setbeamertemplate{section page}{
+  \centering
+  \begin{beamercolorbox}[sep=12pt,center]{part title}
+    \usebeamerfont{section title}\insertsection\par
+  \end{beamercolorbox}
+}
+\setbeamertemplate{subsection page}{
+  \centering
+  \begin{beamercolorbox}[sep=8pt,center]{part title}
+    \usebeamerfont{subsection title}\insertsubsection\par
+  \end{beamercolorbox}
+}
+\AtBeginPart{
+  \frame{\partpage}
+}
+\AtBeginSection{
+  \ifbibliography
+  \else
+    \frame{\sectionpage}
+  \fi
+}
+\AtBeginSubsection{
+  \frame{\subsectionpage}
+}
+$endif$
+$endif$
+$if(beamerarticle)$
+\usepackage{beamerarticle} % needs to be loaded first
+$endif$
 \usepackage{amsmath,amssymb}
 $if(fontfamily)$
 \usepackage[$for(fontfamilyoptions)$$fontfamilyoptions$$sep$,$endfor$]{$fontfamily$}
 $else$
 \usepackage{lmodern}
 $endif$
-
 $if(linestretch)$
 \usepackage{setspace}
 $endif$
@@ -205,17 +247,11 @@ $if(mathspec)$
 $else$
   \usepackage{unicode-math}
 $endif$
-%% --------------------
-%% END math
-%% --------------------
 
 %% --------------------
 %% BEGIN custom fonts
 %% --------------------
 \usepackage{fontspec}
-
-\defaultfontfeatures{Scale=MatchLowercase}
-%  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
 
 % define custom font families
 \newfontfamily{\headerfamily}[
@@ -228,16 +264,15 @@ $if(codefont)$
 $else$
 \newfontfamily{\codefamily}[
   %Scale=0.8462,
-  Scale=MatchLowercase,
-  %Scale=1,
+  %Scale=MatchUppercase,
+  Scale=1,
   BoldFont={* Semibold},
   BoldItalicFont={* Semibold Italic}
 ]{Source Code Pro}
 
 \newfontfamily{\inlinecodefamily}[
   %Scale=0.8462,
-  %Scale=MatchUppercase,
-  Scale=MatchLowercase,
+  Scale=MatchUppercase,
   BoldFont={* Semibold},
   BoldItalicFont={* Semibold Italic}
 ]{Source Code Pro}
@@ -258,17 +293,21 @@ $endif$
 ]{Charis SIL}
 
 \setmonofont[Scale=MatchLowercase]{Source Code Pro}
-%\setmathfont{Noto Sans Math}
+
+% separate lstinline and lstlistings
+\makeatletter
+\lst@AddToHook{TextStyle}{\let\lst@basicstyle\inlinecodefamily\selectfont}
+\makeatother
 %% --------------------
 %% END custom fonts
 %% --------------------
-  
+
 $if(mainfont)$
   \setmainfont[$for(mainfontoptions)$$mainfontoptions$$sep$,$endfor$]{$mainfont$}
 $else$
-  \renewcommand{\familydefault}{\sfdefault} % ss by default
+\renewcommand{\familydefault}{\sfdefault} % ss by default
 $endif$
-
+\defaultfontfeatures{Scale=MatchLowercase}
 
 $if(sansfont)$
   \setsansfont[$for(sansfontoptions)$$sansfontoptions$$sep$,$endfor$]{$sansfont$}
@@ -314,7 +353,7 @@ $if(zero-width-non-joiner)$
 \def\zerowidthnonjoiner{%
   % Prevent ligatures and adjust kerning, but still support hyphenating.
   \texorpdfstring{%
-    \TextOrMath{\nobreak\discretionary{-}{}{\kern.03em}%
+    \textormath{\nobreak\discretionary{-}{}{\kern.03em}%
       \ifvmode\else\nobreak\hskip\z@skip\fi}{}%
   }{}%
 }
@@ -327,14 +366,32 @@ $if(zero-width-non-joiner)$
 \fi
 %% End of ZWNJ support
 $endif$
-
+$if(beamer)$
+$if(theme)$
+\usetheme[$for(themeoptions)$$themeoptions$$sep$,$endfor$]{$theme$}
+$endif$
+$if(colortheme)$
+\usecolortheme{$colortheme$}
+$endif$
+$if(fonttheme)$
+\usefonttheme{$fonttheme$}
+$endif$
+$if(mainfont)$
+\usefonttheme{serif} % use mainfont rather than sansfont for slide text
+$endif$
+$if(innertheme)$
+\useinnertheme{$innertheme$}
+$endif$
+$if(outertheme)$
+\useoutertheme{$outertheme$}
+$endif$
+$endif$
 % Use upquote if available, for straight quotes in verbatim environments
 \IfFileExists{upquote.sty}{\usepackage{upquote}}{}
 \IfFileExists{microtype.sty}{% use microtype if available
   \usepackage[$for(microtypeoptions)$$microtypeoptions$$sep$,$endfor$]{microtype}
   \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
 }{}
-
 $if(indent)$
 $else$
 \makeatletter
@@ -348,38 +405,87 @@ $else$
   \KOMAoptions{parskip=half}}
 \makeatother
 $endif$
-
 $if(verbatim-in-note)$
 \usepackage{fancyvrb}
 $endif$
-
 \usepackage{xcolor}
-
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\hypersetup{
+$if(title-meta)$
+  pdftitle={$title-meta$},
+$endif$
+$if(author-meta)$
+  pdfauthor={$author-meta$},
+$endif$
+$if(lang)$
+  pdflang={$lang$},
+$endif$
+$if(subject)$
+  pdfsubject={$subject$},
+$endif$
+$if(keywords)$
+  pdfkeywords={$for(keywords)$$keywords$$sep$, $endfor$},
+$endif$
+$if(colorlinks)$
+  colorlinks=true,
+  linkcolor={$if(linkcolor)$$linkcolor$$else$Maroon$endif$},
+  filecolor={$if(filecolor)$$filecolor$$else$Maroon$endif$},
+  citecolor={$if(citecolor)$$citecolor$$else$Blue$endif$},
+  urlcolor={$if(urlcolor)$$urlcolor$$else$Blue$endif$},
+$else$
+  hidelinks,
+$endif$
+  pdfcreator={LaTeX via pandoc}}
+\urlstyle{same} % disable monospaced font for URLs
+$if(verbatim-in-note)$
+\VerbatimFootnotes % allow verbatim text in footnotes
+$endif$
+$if(geometry)$
+$if(beamer)$
+\geometry{$for(geometry)$$geometry$$sep$,$endfor$}
+$else$
+\usepackage[$for(geometry)$$geometry$$sep$,$endfor$]{geometry}
+$endif$
+$endif$
+$if(beamer)$
+\newif\ifbibliography
+$endif$
+$if(listings)$
+\usepackage{listings}
+\newcommand{\passthrough}[1]{#1}
+\lstset{defaultdialect=[5.3]Lua}
+\lstset{defaultdialect=[x86masm]Assembler}
+$endif$
 $if(lhs)$
 \lstnewenvironment{code}{\lstset{language=Haskell,basicstyle=\small\ttfamily}}{}
 $endif$
-
 $if(highlighting-macros)$
 $highlighting-macros$
 $endif$
-
 $if(tables)$
 \usepackage{longtable,booktabs,array}
 $if(multirow)$
 \usepackage{multirow}
 $endif$
 \usepackage{calc} % for calculating minipage widths
-
+$if(beamer)$
+\usepackage{caption}
+% Make caption package work with longtable
+\makeatletter
+\def\fnum@table{\tablename~\thetable}
+\makeatother
+$else$
 % Correct order of tables after \paragraph or \subparagraph
-%\usepackage{etoolbox}
+\usepackage{etoolbox}
 \makeatletter
 \patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
 \makeatother
 % Allow footnotes in longtable head/foot
 \IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
 \makesavenoteenv{longtable}
-$endif$  % end tables
-
+$endif$
+$endif$
 $if(graphics)$
 \usepackage{graphicx}
 \makeatletter
@@ -395,9 +501,15 @@ $if(graphics)$
 \def\fps@figure{htbp}
 \makeatother
 $endif$
+$if(links-as-notes)$
+% Make links footnotes instead of hotlinks:
+\DeclareRobustCommand{\href}[2]{#2\footnote{\url{#1}}}
+$endif$
 $if(strikeout)$
 $-- also used for underline
 \usepackage[normalem]{ulem}
+% Avoid problems with \sout in headers with hyperref
+\pdfstringdefDisableCommands{\renewcommand{\sout}{}}
 $endif$
 \setlength{\emergencystretch}{3em} % prevent overfull lines
 \providecommand{\tightlist}{%
@@ -407,7 +519,8 @@ $if(numbersections)$
 $else$
 \setcounter{secnumdepth}{-\maxdimen} % remove section numbering
 $endif$
-
+$if(beamer)$
+$else$
 $if(block-headings)$
 % Make \paragraph and \subparagraph free-standing
 \ifx\paragraph\undefined\else
@@ -419,11 +532,10 @@ $if(block-headings)$
   \renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
 \fi
 $endif$
-
+$endif$
 $if(pagestyle)$
 \pagestyle{$pagestyle$}
 $endif$
-
 $if(csl-refs)$
 \newlength{\cslhangindent}
 \setlength{\cslhangindent}{1.5em}
@@ -449,29 +561,35 @@ $if(csl-refs)$
 \newcommand{\CSLRightInline}[1]{\parbox[t]{\linewidth - \csllabelwidth}{#1}\break}
 \newcommand{\CSLIndent}[1]{\hspace{\cslhangindent}#1}
 $endif$
-$if(lang)$
-\ifLuaTeX
-\usepackage[bidi=basic]{babel}
-\else
-\usepackage[bidi=default]{babel}
-\fi
-$if(babel-lang)$
-\babelprovide[main,import]{$babel-lang$}
-$endif$
-$for(babel-otherlangs)$
-\babelprovide[import]{$babel-otherlangs$}
-$endfor$
-% get rid of language-specific shorthands (see #6817):
-\let\LanguageShortHands\languageshorthands
-\def\languageshorthands#1{}
-$endif$
 $for(header-includes)$
 $header-includes$
 $endfor$
+$if(lang)$
+\ifXeTeX
+  % Load polyglossia as late as possible: uses bidi with RTL langages (e.g. Hebrew, Arabic)
+  \usepackage{polyglossia}
+  \setmainlanguage[$for(polyglossia-lang.options)$$polyglossia-lang.options$$sep$,$endfor$]{$polyglossia-lang.name$}
+$for(polyglossia-otherlangs)$
+  \setotherlanguage[$for(polyglossia-otherlangs.options)$$polyglossia-otherlangs.options$$sep$,$endfor$]{$polyglossia-otherlangs.name$}
+$endfor$
+\else
+  \usepackage[$for(babel-otherlangs)$$babel-otherlangs$,$endfor$main=$babel-lang$]{babel}
+% get rid of language-specific shorthands (see #6817):
+\let\LanguageShortHands\languageshorthands
+\def\languageshorthands#1{}
+$if(babel-newcommands)$
+  $babel-newcommands$
+$endif$
+\fi
+$endif$
 \ifLuaTeX
   \usepackage{selnolig}  % disable illegal ligatures
 \fi
 $if(dir)$
+\ifXeTeX
+  % Load bidi as late as possible as it modifies e.g. graphicx
+  \usepackage{bidi}
+\fi
 \ifPDFTeX
   \TeXXeTstate=1
   \newcommand{\RL}[1]{\beginR #1\endR}
@@ -496,68 +614,46 @@ $endif$
 $if(csquotes)$
 \usepackage{csquotes}
 $endif$
-\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
-\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
-\urlstyle{same} % disable monospaced font for URLs
-$if(links-as-notes)$
-% Make links footnotes instead of hotlinks:
-\DeclareRobustCommand{\href}[2]{#2\footnote{\url{#1}}}
-$endif$
-$if(verbatim-in-note)$
-\VerbatimFootnotes % allow verbatim text in footnotes
-$endif$
-
-\hypersetup{
-$if(title-meta)$
-  pdftitle={$title-meta$},
-$endif$
-$if(author-meta)$
-  pdfauthor={$author-meta$},
-$endif$
-$if(lang)$
-  pdflang={$lang$},
-$endif$
-$if(subject)$
-  pdfsubject={$subject$},
-$endif$
-$if(keywords)$
-  pdfkeywords={$for(keywords)$$keywords$$sep$, $endfor$},
-$endif$
-$if(colorlinks)$
-  colorlinks=true,
-  linkcolor={$if(linkcolor)$$linkcolor$$else$Maroon$endif$},
-  filecolor={$if(filecolor)$$filecolor$$else$Maroon$endif$},
-  citecolor={$if(citecolor)$$citecolor$$else$Blue$endif$},
-  urlcolor={$if(urlcolor)$$urlcolor$$else$Blue$endif$},
-$else$
-$if(boxlinks)$
-$else$
-  hidelinks,
-$endif$
-$endif$
-  pdfcreator={LaTeX via pandoc}}
 
 $if(title)$
 \title{$title$$if(thanks)$\thanks{$thanks$}$endif$}
 $endif$
 $if(subtitle)$
+$if(beamer)$
+$else$
 \usepackage{etoolbox}
 \makeatletter
 \providecommand{\subtitle}[1]{% add subtitle to \maketitle
   \apptocmd{\@title}{\par {\large #1 \par}}{}{}
 }
 \makeatother
+$endif$
 \subtitle{$subtitle$}
 $endif$
 \author{$for(author)$$author$$sep$ \and $endfor$}
 \date{$date$}
+$if(beamer)$
+$if(institute)$
+\institute{$for(institute)$$institute$$sep$ \and $endfor$}
+$endif$
+$if(titlegraphic)$
+\titlegraphic{\includegraphics{$titlegraphic$}}
+$endif$
+$if(logo)$
+\logo{\includegraphics{$logo$}}
+$endif$
+$endif$
 
 \begin{document}
 $if(has-frontmatter)$
 \frontmatter
 $endif$
 $if(title)$
+$if(beamer)$
+\frame{\titlepage}
+$else$
 %\maketitle
+$endif$
 $if(abstract)$
 \begin{abstract}
 $abstract$
@@ -573,7 +669,14 @@ $if(toc)$
 $if(toc-title)$
 \renewcommand*\contentsname{$toc-title$}
 $endif$
-
+$if(beamer)$
+\begin{frame}[allowframebreaks]
+$if(toc-title)$
+  \frametitle{$toc-title$}
+$endif$
+  \tableofcontents[hideallsubsections]
+\end{frame}
+$else$
 {
 $if(colorlinks)$
 \hypersetup{linkcolor=$if(toccolor)$$toccolor$$else$$endif$}
@@ -582,7 +685,7 @@ $endif$
 \tableofcontents
 }
 $endif$
-
+$endif$
 $if(lof)$
 \listoffigures
 $endif$
@@ -609,12 +712,27 @@ $else$
 \renewcommand\refname{$biblio-title$}
 $endif$
 $endif$
-  \bibliography{$for(bibliography)$$bibliography$$sep$,$endfor$}
+$if(beamer)$
+\begin{frame}[allowframebreaks]{$biblio-title$}
+  \bibliographytrue
 $endif$
+  \bibliography{$for(bibliography)$$bibliography$$sep$,$endfor$}
+$if(beamer)$
+\end{frame}
 $endif$
 
+$endif$
+$endif$
 $if(biblatex)$
+$if(beamer)$
+\begin{frame}[allowframebreaks]{$biblio-title$}
+  \bibliographytrue
+  \printbibliography[heading=none]
+\end{frame}
+$else$
 \printbibliography$if(biblio-title)$[title=$biblio-title$]$endif$
+$endif$
+
 $endif$
 $for(include-after)$
 $include-after$
