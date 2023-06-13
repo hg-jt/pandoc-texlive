@@ -41,7 +41,7 @@ curl -LSs \
 # ----------------------------------------
 # Install Pandoc
 # ----------------------------------------
-PANDOC_VERSION=2.19.2
+PANDOC_VERSION=3.1.3
 curl -L -O https://github.com/jgm/pandoc/releases/download/$PANDOC_VERSION/pandoc-$PANDOC_VERSION-1-amd64.deb
 apt-get install -y ./pandoc-$PANDOC_VERSION-1-amd64.deb
 rm pandoc-$PANDOC_VERSION-1-amd64.deb
