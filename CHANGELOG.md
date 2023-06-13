@@ -7,6 +7,10 @@ project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- Added "labnotes" template.
+
 ### Changed
 
 - Upgraded Pandoc to 3.1.3.
@@ -57,7 +61,7 @@ project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Various font updates.
 - *Notes Template*: Styling tweaks for listings and quotes. 
 
-[Unreleased]: https://github.com/hg-jt/pandoc-texlive/compare/20220530...main
+[Unreleased]: https://github.com/hg-jt/pandoc-texlive/compare/20230226...main
 [20230226]: https://github.com/hg-jt/pandoc-texlive/compare/20220530...20230226
 [20220530]: https://github.com/hg-jt/pandoc-texlive/compare/20220509...20220530
 [20220509]: https://github.com/hg-jt/pandoc-texlive/tree/20220509
