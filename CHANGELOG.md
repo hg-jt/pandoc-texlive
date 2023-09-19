@@ -14,7 +14,7 @@ project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
-- Upgraded Pandoc to 3.1.3.
+- Upgraded Pandoc to 3.1.8.
 
 ## [20230226]
 
