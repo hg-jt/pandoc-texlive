@@ -128,3 +128,7 @@ To build the image for local testing:
 ```sh
 make build
 ```
+
+## Resources
+
+- https://github.com/pandoc/dockerfiles
