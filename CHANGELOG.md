@@ -10,6 +10,7 @@ project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Added
 
 - Added "labnotes" template.
+- Added support for additional architectures, `arm64` and `arm/v7`
 
 ### Changed
 
