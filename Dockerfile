@@ -1,4 +1,4 @@
-FROM debian:bookworm-slim
+FROM debian:trixie-slim
 ARG TARGETARCH amd64
 ENV LANG C.UTF-8
 WORKDIR /docs
