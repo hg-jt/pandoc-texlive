@@ -149,7 +149,7 @@ $if(listings)$
     %keywordstyle=\ttfamily\bfseries,
     commentstyle=\color{gray},
     xleftmargin=.25cm,
-    escapeinside={(*}{*)}                    % allow latex code in listing
+%    escapeinside={(*}{*)}                    % allow latex code in listing
 }
 
 %% https://isocpp.org/wiki/faq/misc-environmental-issues#latex-macros
@@ -507,12 +507,16 @@ $if(verbatim-in-note)$
 \VerbatimFootnotes % allow verbatim text in footnotes
 $endif$
 
+\usepackage{hyperxmp}
 \hypersetup{
 $if(title-meta)$
   pdftitle={$title-meta$},
 $endif$
 $if(author-meta)$
   pdfauthor={$author-meta$},
+$endif$
+$if(copyright)$
+  pdfcopyright={$copyright$},
 $endif$
 $if(lang)$
   pdflang={$lang$},
@@ -535,7 +539,8 @@ $else$
   hidelinks,
 $endif$
 $endif$
-  pdfcreator={LaTeX via pandoc}}
+  pdfcreator={LaTeX via pandoc}
+}
 
 $if(title)$
 \title{$title$$if(thanks)$\thanks{$thanks$}$endif$}
