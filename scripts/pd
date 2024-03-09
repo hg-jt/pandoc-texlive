@@ -1,0 +1,148 @@
+#!/usr/bin/env bash
+#PANDOC_IMAGE='ghcr.io/hg-jt/pandoc-texlive:latest'
+PANDOC_IMAGE='ghcr.io/hg-jt/pandoc-texlive:main'
+PDF_ENGINE='xelatex'
+PDF_ENGINE_OPT=-shell-escape  #  -output-driver="xdvipdfmx -z 0"
+OUTPUT_DOCX='false'
+OUTPUT_HTML='false'
+OUTPUT_PDF='true'
+OUTPUT_TEX='false'
+
+
+function log() {
+  >&2 echo $@;
+}
+
+function usage() {
+  >&2 cat <<EOF
+NAME
+    $(basename $0) - pandoc wrapper
+
+SYNOPSIS
+    $(basename $0) [-w] [-t] [-H] [-h] SOURCE_FILE [ADDITIONAL_PANDOC_ARGS]
+
+DESCRIPTION
+    pd is a convienence script for calling Pandoc inside a docker
+    container. The default configuration assumes Markdown input
+    and PDF output, however the input can by any format supported
+    by pandoc.
+
+    When options are provided, they will trigger the genration of
+    additional output formats (i.e. the PDF will still be generated).
+
+OPTIONS
+     -h   Print usage message.
+
+     -H   Generate HTML output.
+
+     -w   Generate docx output.
+
+     -t   Generate tex output.
+EOF
+}
+
+# parse command line args
+while getopts ':hHwt' opt; do
+  case "$opt" in
+    h)
+      usage
+      exit 0
+      ;;
+    H)
+      OUTPUT_HTML='true'
+      ;;
+    w)
+      OUTPUT_DOCX='true'
+      ;;
+    t)
+      OUTPUT_TEX='true'
+      ;;
+    ?)
+      log "Invalid command line option: ${OPTARG}.\n\n"
+      usage
+      exit 1
+      ;;
+  esac
+done
+
+srcfile=${@:$OPTIND:1}
+
+if [ -z "$srcfile" ]; then
+  log "ERROR: a source file is required."
+  exit 1
+fi
+
+#if [ ! -f "$srcfile" ]; then
+#  log "$srcfile does not exist!"
+#  exit 1
+#fi
+
+if [ "$srcfile" = "-" ]; then
+  extension="md"
+  filename=${@:$OPTIND+1:1}
+else
+  extension="${srcfile##*.}"
+  filename="${srcfile%.*}"
+fi
+
+if $OUTPUT_DOCX; then
+  docker run \
+    --rm \
+    -i \
+    -v "$(pwd)":/docs \
+    $PANDOC_IMAGE \
+    -s \
+    --no-highlight \
+    -o ${filename}.docx \
+    ${srcfile}
+fi
+
+if $OUTPUT_HTML; then
+  docker run \
+    --rm \
+    -i \
+    -v "$(pwd)":/docs \
+    $PANDOC_IMAGE \
+    -s \
+    --no-highlight  \
+    -o ${filename}.html \
+    ${srcfile}
+fi
+
+if $OUTPUT_TEX; then
+  docker run \
+    --rm \
+    -i \
+    -v "$(pwd)":/docs \
+    $PANDOC_IMAGE \
+    --template=notes \
+    -s \
+    --pdf-engine=${PDF_ENGINE} \
+    --pdf-engine-opt=${PDF_ENGINE_OPT} \
+    --no-highlight \
+    --listings \
+    --from markdown+pipe_tables+raw_tex+strikeout \
+    --lua-filter=diagram-generator.lua \
+    -V colorlinks=true \
+    -o ${filename}.tex \
+    ${srcfile}
+fi
+
+if $OUTPUT_PDF; then
+  docker run \
+    --rm \
+    -i \
+    -v "$(pwd)":/docs \
+    $PANDOC_IMAGE \
+    --template=notes \
+    -s \
+    --pdf-engine=${PDF_ENGINE} \
+    --pdf-engine-opt=${PDF_ENGINE_OPT} -output-driver="xdvipdfmx -z 0" \
+    --no-highlight \
+    --listings \
+    --from markdown+pipe_tables+raw_tex+strikeout \
+    --lua-filter=diagram-generator.lua \
+    -V colorlinks=true \
+    -o ${filename}.pdf \
+    ${srcfile}
+fi
