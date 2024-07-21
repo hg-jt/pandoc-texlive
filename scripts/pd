@@ -1,12 +1,14 @@
 #!/usr/bin/env bash
 #PANDOC_IMAGE='ghcr.io/hg-jt/pandoc-texlive:latest'
 PANDOC_IMAGE='ghcr.io/hg-jt/pandoc-texlive:main'
+PANDOC_TEX_TEMPLATE='notes'
 PDF_ENGINE='xelatex'
 PDF_ENGINE_OPT=-shell-escape  #  -output-driver="xdvipdfmx -z 0"
 OUTPUT_DOCX='false'
 OUTPUT_HTML='false'
-OUTPUT_PDF='true'
+OUTPUT_PDF='false'
 OUTPUT_TEX='false'
+MARKDOWN_FEATURES='markdown+pipe_tables+table_captions+raw_tex+strikeout'
 
 
 function log() {
@@ -19,7 +21,7 @@ NAME
     $(basename $0) - pandoc wrapper
 
 SYNOPSIS
-    $(basename $0) [-w] [-t] [-H] [-h] SOURCE_FILE [ADDITIONAL_PANDOC_ARGS]
+    $(basename $0) [-h] [-H] [-p] [-t] [-w]  SOURCE_FILE [ADDITIONAL_PANDOC_ARGS]
 
 DESCRIPTION
     pd is a convienence script for calling Pandoc inside a docker
@@ -35,14 +37,19 @@ OPTIONS
 
      -H   Generate HTML output.
 
-     -w   Generate docx output.
+     -p   Generate PDF output.
 
      -t   Generate tex output.
+
+     -w   Generate docx output.
 EOF
 }
 
+# ensure $name is unset to detect no args
+test -z "$name" && unset name
+
 # parse command line args
-while getopts ':hHwt' opt; do
+while getopts ':hHptw' opt; do
   case "$opt" in
     h)
       usage
@@ -51,11 +58,14 @@ while getopts ':hHwt' opt; do
     H)
       OUTPUT_HTML='true'
       ;;
-    w)
-      OUTPUT_DOCX='true'
+    p)
+      OUTPUT_PDF='true'
       ;;
     t)
       OUTPUT_TEX='true'
+      ;;
+    w)
+      OUTPUT_DOCX='true'
       ;;
     ?)
       log "Invalid command line option: ${OPTARG}.\n\n"
@@ -65,6 +75,12 @@ while getopts ':hHwt' opt; do
   esac
 done
 
+# set default options if none provided
+if [ -z "$name" ]; then
+  OUTPUT_PDF='true'
+fi
+
+# get filename as positional arg
 srcfile=${@:$OPTIND:1}
 
 if [ -z "$srcfile" ]; then
@@ -105,6 +121,7 @@ if $OUTPUT_HTML; then
     $PANDOC_IMAGE \
     -s \
     --no-highlight  \
+    -V mainfont=sans-serif \
     -o ${filename}.html \
     ${srcfile}
 fi
@@ -115,13 +132,13 @@ if $OUTPUT_TEX; then
     -i \
     -v "$(pwd)":/docs \
     $PANDOC_IMAGE \
-    --template=notes \
+    --template=${PANDOC_TEX_TEMPLATE} \
     -s \
     --pdf-engine=${PDF_ENGINE} \
     --pdf-engine-opt=${PDF_ENGINE_OPT} \
     --no-highlight \
     --listings \
-    --from markdown+pipe_tables+raw_tex+strikeout \
+    --from $MARKDOWN_FEATURES \
     --lua-filter=diagram-generator.lua \
     -V colorlinks=true \
     -o ${filename}.tex \
@@ -134,13 +151,13 @@ if $OUTPUT_PDF; then
     -i \
     -v "$(pwd)":/docs \
     $PANDOC_IMAGE \
-    --template=notes \
+    --template=${PANDOC_TEX_TEMPLATE} \
     -s \
     --pdf-engine=${PDF_ENGINE} \
     --pdf-engine-opt=${PDF_ENGINE_OPT} -output-driver="xdvipdfmx -z 0" \
     --no-highlight \
     --listings \
-    --from markdown+pipe_tables+raw_tex+strikeout \
+    --from $MARKDOWN_FEATURES \
     --lua-filter=diagram-generator.lua \
     -V colorlinks=true \
     -o ${filename}.pdf \
