@@ -3,7 +3,7 @@
 % Options for packages loaded elsewhere
 \PassOptionsToPackage{unicode}{hyperref}
 \PassOptionsToPackage{hyphens}{url}
-\PassOptionsToPackage{dvipsnames,svgnames,x11names}{xcolor}
+\PassOptionsToPackage{dvipsnames,svgnames,table,x11names}{xcolor}
 
 \documentclass[
 $if(fontsize)$
@@ -16,6 +16,7 @@ $for(classoption)$
   $classoption$$sep$,
 $endfor$
 ]{$documentclass$}
+
 
 %% --------------------
 %% BEGIN custom document configuration
@@ -101,6 +102,7 @@ $endif$
 %% END custom title
 %% --------------------
 
+
 %% --------------------
 %% BEGIN custom headers/footers
 %% --------------------
@@ -127,9 +129,8 @@ $if(listings)$
 \lstset{defaultdialect=[5.3]Lua}
 \lstset{defaultdialect=[x86masm]Assembler}
 
-\usepackage{listings}
 \usepackage{color}
-\usepackage[table]{xcolor}
+\usepackage{xcolor}
 \usepackage[font=sf]{caption}
 \captionsetup{labelformat=empty}             % Remove "Figure" & "Listing" prefix
 
@@ -141,15 +142,19 @@ $if(listings)$
     upquote=true,
     columns=fullflexible,
     keepspaces=true,
-    showstringspaces=false,
-    literate=*{*}{\codefamily{*}}1,          % fix awkwardly low asterix
-    basicstyle=\codefamily,
+    showspaces=false,
+    showtabs=false,
+    %showstringspaces=false,
+    breaklines=true,
+    %breakatwhitespace=true,
+    literate={*}{*}1                         % fix awkwardly low asterix
+             {-}{-}1,                        % fix copyability of dashes
+    basicstyle=\small\codefamily,
     identifierstyle=\codefamily,
-    keywordstyle=\codefamily\bfseries,
-    %keywordstyle=\ttfamily\bfseries,
+    %keywordstyle=\codefamily\bfseries,
     commentstyle=\color{gray},
     xleftmargin=.25cm,
-%    escapeinside={(*}{*)}                    % allow latex code in listing
+    %escapeinside={(*}{*)}                   % allow latex code in listing
 }
 
 %% https://isocpp.org/wiki/faq/misc-environmental-issues#latex-macros
@@ -160,17 +165,8 @@ $if(listings)$
 \makeatletter
 \lst@AddToHook{TextStyle}{\let\lst@basicstyle\inlinecodefamily\selectfont}
 \makeatother
+$endif$
 
-% better inline asterix
-\makeatletter
-\lst@CCPutMacro
-    \lst@ProcessOther {"2A}{%
-      \lst@codefamily 
-         {\raisebox{2pt}{*}}% used with ttfamily
-         \textasteriskcentered}% used with other fonts
-    \@empty\z@\@empty
-\makeatother
-$endif$  
 
 %% --------------------
 %% END pretty-source-code
@@ -227,17 +223,16 @@ $if(codefont)$
 \newfontfamily{\codefamily}[$for(codefontoptions)$$codefontoptions$$sep$,$endfor$]{$codefont$}
 $else$
 \newfontfamily{\codefamily}[
-  %Scale=0.8462,
-  Scale=MatchLowercase,
-  %Scale=1,
+  Scale=MatchLowercase,    % also tried 0.8462 and 1
+  ItalicFont={* Italic},
   BoldFont={* Semibold},
-  BoldItalicFont={* Semibold Italic}
+  BoldItalicFont={* Semibold Italic},
+  Ligatures={NoCommon, NoDiscretionary, NoHistoric, NoRequired, NoContextual},
+  Numbers={SlashedZero}
 ]{Source Code Pro}
 
 \newfontfamily{\inlinecodefamily}[
-  %Scale=0.8462,
-  %Scale=MatchUppercase,
-  Scale=MatchLowercase,
+  Scale=MatchLowercase,    % also tried 0.8462
   BoldFont={* Semibold},
   BoldItalicFont={* Semibold Italic}
 ]{Source Code Pro}
