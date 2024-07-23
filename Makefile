@@ -1,11 +1,11 @@
-IMAGE_NAME=hgjt/pandoc-texlive
+IMAGE_NAME=ghcr.io/hg-jt/pandoc-texlive
 IMAGE_TAG=latest
 
 .PHONY: help
 .DEFAULT_GOAL := help
 
 build: ## build the image
-	docker build -t $(IMAGE_NAME):$(IMAGE_TAG) .
+	docker build --no-cache --build-arg TARGETARCH=$(shell arch) -t $(IMAGE_NAME):$(IMAGE_TAG) .
 
 publish: build  ## publish the image
 	docker push $(IMAGE_NAME):$(IMAGE_TAG)
