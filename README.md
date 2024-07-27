@@ -19,6 +19,7 @@ source fonts are included:
 | [IBM Plex](https://github.com/IBM/plex) (Sans, Serif, and Mono)         | IBM Plex          | [OFL 1.1] |
 | [Libre Caslon Text](https://github.com/impallari/Libre-Caslon-Text)     | Libre Caslon Text | [OFL 1.1] |
 | [Libre Franklin](https://github.com/impallari/Libre-Franklin)           | Libre Franklin    | [OFL 1.1] |
+| [Noto Sans Math](https://github.com/notofonts/math)                     | Noto Sans Math    | [OFL 1.1] |
 
 [OFL 1.1]: https://opensource.org/licenses/OFL-1.1
 
