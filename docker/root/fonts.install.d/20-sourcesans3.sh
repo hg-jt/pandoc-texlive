@@ -2,7 +2,7 @@
 # Name: Adobe Source Sans 3
 # License: SIL OFL 1.1
 # License URL: https://github.com/adobe-fonts/source-sans/blob/release/LICENSE.md
-VERSION=3.046R
+VERSION=3.052R
 
 curl -L -O https://github.com/adobe-fonts/source-sans/archive/refs/tags/$VERSION.tar.gz
 tar xzf $VERSION.tar.gz

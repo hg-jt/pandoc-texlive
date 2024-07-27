@@ -1,9 +1,15 @@
 %% notes.latex --- LaTeX template for simple notes.
 
 % Options for packages loaded elsewhere
-\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{unicode$for(hyperrefoptions)$,$hyperrefoptions$$endfor$}{hyperref}
 \PassOptionsToPackage{hyphens}{url}
+
+$if(colorlinks)$
 \PassOptionsToPackage{dvipsnames,svgnames,table,x11names}{xcolor}
+$endif$
+$if(CJKmainfont)$
+\PassOptionsToPackage{space}{xeCJK}
+$endif$
 
 \documentclass[
 $if(fontsize)$
@@ -144,7 +150,7 @@ $if(listings)$
     keepspaces=true,
     showspaces=false,
     showtabs=false,
-    %showstringspaces=false,
+    showstringspaces=false,
     breaklines=true,
     %breakatwhitespace=true,
     literate={*}{*}1                         % fix awkwardly low asterix
@@ -152,9 +158,20 @@ $if(listings)$
     basicstyle=\small\codefamily,
     identifierstyle=\codefamily,
     %keywordstyle=\codefamily\bfseries,
+    keywordstyle=\codefamily,
     commentstyle=\color{gray},
     xleftmargin=.25cm,
     %escapeinside={(*}{*)}                   % allow latex code in listing
+}
+
+\lstset{
+    language=python,
+    upquote=true,
+    keywordstyle=\codefamily\bfseries,
+    %stringstyle=\color{red},
+    morecomment=[s]{"""}{"""},
+    morecomment=[s]{'''}{'''},
+    commentstyle=\color{gray}\itshape
 }
 
 %% https://isocpp.org/wiki/faq/misc-environmental-issues#latex-macros
@@ -166,17 +183,18 @@ $if(listings)$
 \lst@AddToHook{TextStyle}{\let\lst@basicstyle\inlinecodefamily\selectfont}
 \makeatother
 $endif$
-
-
 %% --------------------
 %% END pretty-source-code
 %% --------------------
 
 
 %% --------------------
-%% BEGIN math
+%% BEGIN custom fonts
 %% --------------------
-\usepackage{amsmath,amssymb}
+%\usepackage{amsmath,amssymb}
+\newcommand{\square}{□}    % U+25A1
+\newcommand{\boxtimes}{⊠}  % U+22A0
+
 $if(fontfamily)$
 \usepackage[$for(fontfamilyoptions)$$fontfamilyoptions$$sep$,$endfor$]{$fontfamily$}
 $else$
@@ -194,21 +212,24 @@ $endif$
 \else % if luatex or xetex
 $if(mathspec)$
   \ifXeTeX
-    \usepackage{mathspec}
+    \usepackage{mathspec} % this also loads fontspec
   \else
-    \usepackage{unicode-math}
+    \usepackage{unicode-math} % this also loads fontspec
   \fi
 $else$
-  \usepackage{unicode-math}
+  \usepackage{unicode-math} % this also loads fontspec
 $endif$
-%% --------------------
-%% END math
-%% --------------------
+%  \defaultfontfeatures{Scale=MatchLowercase}$-- must come before Beamer theme
+%  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
 
-%% --------------------
-%% BEGIN custom fonts
-%% --------------------
-\usepackage{fontspec}
+$if(fontfamily)$
+$else$
+$-- Set default font early so it can be overridden
+\usepackage{lmodern}
+$endif$
+
+\usepackage{fontspec}   % enable fontspec (it should already be implicitly loaded)
 
 \defaultfontfeatures{Scale=MatchLowercase}
 %  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
@@ -228,13 +249,18 @@ $else$
   BoldFont={* Semibold},
   BoldItalicFont={* Semibold Italic},
   Ligatures={NoCommon, NoDiscretionary, NoHistoric, NoRequired, NoContextual},
-  Numbers={SlashedZero}
+  Numbers={SlashedZero},
+  ItalicFeatures={
+    CharacterVariant={1:1} % double-story a (cv01)
+  }
 ]{Source Code Pro}
 
 \newfontfamily{\inlinecodefamily}[
   Scale=MatchLowercase,    % also tried 0.8462
   BoldFont={* Semibold},
-  BoldItalicFont={* Semibold Italic}
+  BoldItalicFont={* Semibold Italic},
+  Ligatures={NoCommon, NoDiscretionary, NoHistoric, NoRequired, NoContextual},
+  Numbers={SlashedZero}
 ]{Source Code Pro}
 $endif$
 
@@ -253,7 +279,7 @@ $endif$
 ]{Charis SIL}
 
 \setmonofont[Scale=MatchLowercase]{Source Code Pro}
-%\setmathfont{Noto Sans Math}
+\setmathfont{Noto Sans Math}
 %% --------------------
 %% END custom fonts
 %% --------------------
@@ -265,11 +291,42 @@ $else$
 $endif$
 
 
+\ifPDFTeX\else
+  % xetex/luatex font selection
+$if(mainfont)$
+  $if(mainfontfallback)$
+    \ifLuaTeX
+      \usepackage{luaotfload}
+      \directlua{luaotfload.add_fallback("mainfontfallback",{
+        $for(mainfontfallback)$"$mainfontfallback$"$sep$,$endfor$
+      })}
+    \fi
+  $endif$
+  \setmainfont[$for(mainfontoptions)$$mainfontoptions$$sep$,$endfor$$if(mainfontfallback)$,RawFeature={fallback=mainfontfallback}$endif$]{$mainfont$}
+$else$
+  \renewcommand{\familydefault}{\sfdefault} % ss by default
+$endif$
 $if(sansfont)$
-  \setsansfont[$for(sansfontoptions)$$sansfontoptions$$sep$,$endfor$]{$sansfont$}
+  $if(sansfontfallback)$
+    \ifLuaTeX
+      \usepackage{luaotfload}
+      \directlua{luaotfload.add_fallback("sansfontfallback",{
+        $for(sansfontfallback)$"$sansfontfallback$"$sep$,$endfor$
+      })}
+    \fi
+  $endif$
+  \setsansfont[$for(sansfontoptions)$$sansfontoptions$$sep$,$endfor$$if(sansfontfallback)$,RawFeature={fallback=sansfontfallback}$endif$]{$sansfont$}
 $endif$
 $if(monofont)$
-  \setmonofont[$for(monofontoptions)$$monofontoptions$$sep$,$endfor$]{$monofont$}
+  $if(monofontfallback)$
+    \ifLuaTeX
+      \usepackage{luaotfload}
+      \directlua{luaotfload.add_fallback("monofontfallback",{
+        $for(monofontfallback)$"$monofontfallback$"$sep$,$endfor$
+      })}
+    \fi
+  $endif$
+  \setmonofont[$for(monofontoptions)$$monofontoptions$$sep$,$endfor$$if(monofontfallback)$,RawFeature={fallback=monofontfallback}$endif$]{$monofont$}
 $endif$
 $for(fontfamilies)$
   \newfontfamily{$fontfamilies.name$}[$for(fontfamilies.options)$$fontfamilies.options$$sep$,$endfor$]{$fontfamilies.font$}
@@ -289,6 +346,12 @@ $if(CJKmainfont)$
   \ifXeTeX
     \usepackage{xeCJK}
     \setCJKmainfont[$for(CJKoptions)$$CJKoptions$$sep$,$endfor$]{$CJKmainfont$}
+    $if(CJKsansfont)$
+      \setCJKsansfont[$for(CJKoptions)$$CJKoptions$$sep$,$endfor$]{$CJKsansfont$}
+    $endif$
+    $if(CJKmonofont)$
+      \setCJKmonofont[$for(CJKoptions)$$CJKoptions$$sep$,$endfor$]{$CJKmonofont$}
+    $endif$
   \fi
 $endif$
 $if(luatexjapresetoptions)$
@@ -366,7 +429,7 @@ $endif$
 \usepackage{calc} % for calculating minipage widths
 
 % Correct order of tables after \paragraph or \subparagraph
-%\usepackage{etoolbox}
+\usepackage{etoolbox}  % TODO: this was commented out before...why?
 \makeatletter
 \patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
 \makeatother
@@ -378,22 +441,42 @@ $endif$  % end tables
 $if(graphics)$
 \usepackage{graphicx}
 \makeatletter
-\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
-\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
-\makeatother
-% Scale images if necessary, so that they will not overflow the page
-% margins by default, and it is still possible to overwrite the defaults
-% using explicit options in \includegraphics[width, height, ...]{}
-\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+\newsavebox\pandoc@box
+\newcommand*\pandocbounded[1]{% scales image to fit in text height/width
+  \sbox\pandoc@box{#1}%
+  \Gscale@div\@tempa{\textheight}{\dimexpr\ht\pandoc@box+\dp\pandoc@box\relax}%
+  \Gscale@div\@tempb{\linewidth}{\wd\pandoc@box}%
+  \ifdim\@tempb\p@<\@tempa\p@\let\@tempa\@tempb\fi% select the smaller of both
+  \ifdim\@tempa\p@<\p@\scalebox{\@tempa}{\usebox\pandoc@box}%
+  \else\usebox{\pandoc@box}%
+  \fi%
+}
 % Set default figure placement to htbp
-\makeatletter
 \def\fps@figure{htbp}
 \makeatother
 $endif$
+
+$if(svg)$
+\usepackage{svg}
+$endif$
+
 $if(strikeout)$
 $-- also used for underline
-\usepackage[normalem]{ulem}
+\ifLuaTeX
+  \usepackage{luacolor}
+  \usepackage[soul]{lua-ul}
+\else
+  \usepackage{soul}
+$if(CJKmainfont)$
+  \ifXeTeX
+    % soul's \st doesn't work for CJK:
+    \usepackage{xeCJKfntef}
+    \renewcommand{\st}[1]{\sout{#1}}
+  \fi
 $endif$
+\fi
+$endif$
+
 \setlength{\emergencystretch}{3em} % prevent overfull lines
 \providecommand{\tightlist}{%
   \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
@@ -403,16 +486,37 @@ $else$
 \setcounter{secnumdepth}{-\maxdimen} % remove section numbering
 $endif$
 
+$if(subfigure)$
+\usepackage{subcaption}
+$endif$
+
+$if(beamer)$
+$else$
 $if(block-headings)$
 % Make \paragraph and \subparagraph free-standing
+\makeatletter
 \ifx\paragraph\undefined\else
   \let\oldparagraph\paragraph
-  \renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
+  \renewcommand{\paragraph}{
+    \@ifstar
+      \xxxParagraphStar
+      \xxxParagraphNoStar
+  }
+  \newcommand{\xxxParagraphStar}[1]{\oldparagraph*{#1}\mbox{}}
+  \newcommand{\xxxParagraphNoStar}[1]{\oldparagraph{#1}\mbox{}}
 \fi
 \ifx\subparagraph\undefined\else
   \let\oldsubparagraph\subparagraph
-  \renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+  \renewcommand{\subparagraph}{
+    \@ifstar
+      \xxxSubParagraphStar
+      \xxxSubParagraphNoStar
+  }
+  \newcommand{\xxxSubParagraphStar}[1]{\oldsubparagraph*{#1}\mbox{}}
+  \newcommand{\xxxSubParagraphNoStar}[1]{\oldsubparagraph{#1}\mbox{}}
 \fi
+\makeatother
+$endif$
 $endif$
 
 $if(pagestyle)$
@@ -420,28 +524,38 @@ $if(pagestyle)$
 $endif$
 
 $if(csl-refs)$
+% definitions for citeproc citations
+\NewDocumentCommand\citeproctext{}{}
+\NewDocumentCommand\citeproc{mm}{%
+  \begingroup\def\citeproctext{#2}\cite{#1}\endgroup}
+\makeatletter
+ % allow citations to break across lines
+ \let\@cite@ofmt\@firstofone
+ % avoid brackets around text for \cite:
+ \def\@biblabel#1{}
+ \def\@cite#1#2{{#1\if@tempswa , #2\fi}}
+\makeatother
 \newlength{\cslhangindent}
 \setlength{\cslhangindent}{1.5em}
 \newlength{\csllabelwidth}
 \setlength{\csllabelwidth}{3em}
-\newlength{\cslentryspacingunit} % times entry-spacing
-\setlength{\cslentryspacingunit}{\parskip}
-\newenvironment{CSLReferences}[2] % #1 hanging-ident, #2 entry spacing
- {% don't indent paragraphs
-  \setlength{\parindent}{0pt}
+\newenvironment{CSLReferences}[2] % #1 hanging-indent, #2 entry-spacing
+ {\begin{list}{}{%
+  \setlength{\itemindent}{0pt}
+  \setlength{\leftmargin}{0pt}
+  \setlength{\parsep}{0pt}
   % turn on hanging indent if param 1 is 1
   \ifodd #1
-  \let\oldpar\par
-  \def\par{\hangindent=\cslhangindent\oldpar}
+   \setlength{\leftmargin}{\cslhangindent}
+   \setlength{\itemindent}{-1\cslhangindent}
   \fi
   % set entry spacing
-  \setlength{\parskip}{#2\cslentryspacingunit}
- }%
- {}
+  \setlength{\itemsep}{#2\baselineskip}}}
+ {\end{list}}
 \usepackage{calc}
-\newcommand{\CSLBlock}[1]{#1\hfill\break}
-\newcommand{\CSLLeftMargin}[1]{\parbox[t]{\csllabelwidth}{#1}}
-\newcommand{\CSLRightInline}[1]{\parbox[t]{\linewidth - \csllabelwidth}{#1}\break}
+\newcommand{\CSLBlock}[1]{\hfill\break\parbox[t]{\linewidth}{\strut\ignorespaces#1\strut}}
+\newcommand{\CSLLeftMargin}[1]{\parbox[t]{\csllabelwidth}{\strut#1\strut}}
+\newcommand{\CSLRightInline}[1]{\parbox[t]{\linewidth - \csllabelwidth}{\strut#1\strut}}
 \newcommand{\CSLIndent}[1]{\hspace{\cslhangindent}#1}
 $endif$
 $if(lang)$
@@ -452,20 +566,36 @@ $if(lang)$
 \fi
 $if(babel-lang)$
 \babelprovide[main,import]{$babel-lang$}
+$if(mainfont)$
+\ifPDFTeX
+\else
+\babelfont{rm}[$for(mainfontoptions)$$mainfontoptions$$sep$,$endfor$$if(mainfontfallback)$,RawFeature={fallback=mainfontfallback}$endif$]{$mainfont$}
+\fi
+$endif$
 $endif$
 $for(babel-otherlangs)$
 \babelprovide[import]{$babel-otherlangs$}
 $endfor$
+$for(babelfonts/pairs)$
+\babelfont[$babelfonts.key$]{rm}{$babelfonts.value$}
+$endfor$
 % get rid of language-specific shorthands (see #6817):
 \let\LanguageShortHands\languageshorthands
 \def\languageshorthands#1{}
+$if(selnolig-langs)$
+\ifLuaTeX
+  \usepackage[$for(selnolig-langs)$$it$$sep$,$endfor$]{selnolig} % disable illegal ligatures
+\fi
 $endif$
+$endif$
+
 $for(header-includes)$
 $header-includes$
 $endfor$
-\ifLuaTeX
-  \usepackage{selnolig}  % disable illegal ligatures
-\fi
+
+%\ifLuaTeX
+%  \usepackage{selnolig}  % disable illegal ligatures
+%\fi
 $if(dir)$
 \ifPDFTeX
   \TeXXeTstate=1
@@ -475,34 +605,42 @@ $if(dir)$
   \newenvironment{LTR}{\beginL}{\endL}
 \fi
 $endif$
+
+
 $if(natbib)$
 \usepackage[$natbiboptions$]{natbib}
 \bibliographystyle{$if(biblio-style)$$biblio-style$$else$plainnat$endif$}
 $endif$
+
 $if(biblatex)$
 \usepackage[$if(biblio-style)$style=$biblio-style$,$endif$$for(biblatexoptions)$$biblatexoptions$$sep$,$endfor$]{biblatex}
 $for(bibliography)$
 \addbibresource{$bibliography$}
 $endfor$
 $endif$
+
 $if(nocite-ids)$
 \nocite{$for(nocite-ids)$$it$$sep$, $endfor$}
 $endif$
+
 $if(csquotes)$
 \usepackage{csquotes}
 $endif$
-\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+
+\usepackage{bookmark}
 \IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
-\urlstyle{same} % disable monospaced font for URLs
+\urlstyle{$if(urlstyle)$$urlstyle$$else$same$endif$}
+
 $if(links-as-notes)$
 % Make links footnotes instead of hotlinks:
 \DeclareRobustCommand{\href}[2]{#2\footnote{\url{#1}}}
 $endif$
+
 $if(verbatim-in-note)$
 \VerbatimFootnotes % allow verbatim text in footnotes
 $endif$
 
-\usepackage{hyperxmp}
+%\usepackage{hyperxmp}
 \hypersetup{
 $if(title-meta)$
   pdftitle={$title-meta$},
@@ -541,12 +679,15 @@ $if(title)$
 \title{$title$$if(thanks)$\thanks{$thanks$}$endif$}
 $endif$
 $if(subtitle)$
+$if(beamer)$
+$else$
 \usepackage{etoolbox}
 \makeatletter
 \providecommand{\subtitle}[1]{% add subtitle to \maketitle
   \apptocmd{\@title}{\par {\large #1 \par}}{}{}
 }
 \makeatother
+$endif$
 \subtitle{$subtitle$}
 $endif$
 \author{$for(author)$$author$$sep$ \and $endfor$}
@@ -557,7 +698,7 @@ $if(has-frontmatter)$
 \frontmatter
 $endif$
 $if(title)$
-%\maketitle
+%\maketitle                                      % NOTE: disabled maketitle
 $if(abstract)$
 \begin{abstract}
 $abstract$
@@ -615,6 +756,7 @@ $endif$
 
 $if(biblatex)$
 \printbibliography$if(biblio-title)$[title=$biblio-title$]$endif$
+
 $endif$
 $for(include-after)$
 $include-after$

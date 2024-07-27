@@ -2,7 +2,7 @@
 # Name: Charis SIL
 # License: SIL OFL 1.1
 # License URL: https://github.com/silnrsi/font-charis/blob/master/OFL.txt
-VERSION=6.101
+VERSION=6.200
 
 # Charis SIL
 curl -L -O https://github.com/silnrsi/font-charis/releases/download/v$VERSION/CharisSIL-$VERSION.zip

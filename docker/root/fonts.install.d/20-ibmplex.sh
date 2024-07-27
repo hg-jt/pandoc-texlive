@@ -2,7 +2,7 @@
 # Name: IBM Plex
 # License: SIL OFL 1.1
 # License URL: https://github.com/IBM/plex/blob/master/LICENSE.txt
-VERSION=6.1.1
+VERSION=6.4.1
 
 curl -L -O https://github.com/IBM/plex/archive/refs/tags/v$VERSION.tar.gz
 tar xzf v$VERSION.tar.gz

@@ -4,9 +4,9 @@
 # ----------------------------------------
 # Prepare to install packages and fonts
 # ----------------------------------------
-sed -i 's/main/main contrib/' /etc/apt/sources.list    # add contrib
+awk '!NF{exit}1' /etc/apt/sources.list.d/debian.sources | sed 's/main/contrib/' > /etc/apt/sources.list.d/debian-contrib.sources  # add contrib
 apt-get update
-apt-get install -y --no-install-recommends ca-certificates curl gzip tar unzip
+apt-get install -y --no-install-recommends apt-utils ca-certificates curl dialog gzip tar unzip
 
 
 # ----------------------------------------
@@ -23,7 +23,9 @@ apt-get install -y --no-install-recommends \
         texlive-pstricks \
         latexmk \
         lmodern
+# lcdf-typetools
 # texlive-fonts-extra
+# fonts-lmodern
 
 
 # ----------------------------------------
@@ -41,7 +43,7 @@ curl -LSs \
 # ----------------------------------------
 # Install Pandoc
 # ----------------------------------------
-PANDOC_VERSION=3.1.8
+PANDOC_VERSION=3.2.1
 curl -L -O https://github.com/jgm/pandoc/releases/download/$PANDOC_VERSION/pandoc-$PANDOC_VERSION-1-$TARGETARCH.deb
 apt-get install -y ./pandoc-$PANDOC_VERSION-1-$TARGETARCH.deb
 rm pandoc-$PANDOC_VERSION-1-$TARGETARCH.deb
@@ -75,11 +77,11 @@ rm -r /tmp/fonts
 # ----------------------------------------
 useradd -ms /bin/bash pandoc
 mv /root/.local /home/pandoc
-chown -r pandoc: /home/pandoc/.local
+chown -R pandoc: /home/pandoc/.local
 
 
 # clean up os packages
-apt-get purge -y curl unzip
+apt-get purge -y apt-utils curl dialog unzip
 apt-get clean -y
 apt-get autoclean -y
 apt-get autoremove -y
