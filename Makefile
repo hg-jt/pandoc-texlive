@@ -5,7 +5,7 @@ IMAGE_TAG=latest
 .DEFAULT_GOAL := help
 
 build: ## build the image
-	docker build --no-cache --build-arg TARGETARCH=$(shell arch) -t $(IMAGE_NAME):$(IMAGE_TAG) .
+	docker build --no-cache -t $(IMAGE_NAME):$(IMAGE_TAG) .
 
 publish: build  ## publish the image
 	docker push $(IMAGE_NAME):$(IMAGE_TAG)
