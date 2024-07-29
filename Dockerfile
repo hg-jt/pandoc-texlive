@@ -1,5 +1,5 @@
 FROM debian:trixie-slim
-ARG BUILDARCH
+ARG TARGETARCH
 ENV LANG="C.UTF-8"
 WORKDIR /docs
 COPY docker /
