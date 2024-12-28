@@ -8,7 +8,8 @@ OUTPUT_DOCX='false'
 OUTPUT_HTML='false'
 OUTPUT_PDF='false'
 OUTPUT_TEX='false'
-MARKDOWN_FEATURES='markdown+pipe_tables+table_captions+raw_tex+strikeout'
+OUTPUT_TEXTILE='false'
+MARKDOWN_FEATURES='markdown+pipe_tables+table_captions+raw_tex+strikeout+task_lists'
 
 
 function log() {
@@ -41,6 +42,8 @@ OPTIONS
 
      -t   Generate tex output.
 
+     -T   Generate textile output.
+
      -w   Generate docx output.
 EOF
 }
@@ -49,7 +52,7 @@ EOF
 test -z "$name" && unset name
 
 # parse command line args
-while getopts ':hHptw' opt; do
+while getopts ':hHptTw' opt; do
   case "$opt" in
     h)
       usage
@@ -63,6 +66,9 @@ while getopts ':hHptw' opt; do
       ;;
     t)
       OUTPUT_TEX='true'
+      ;;
+    T)
+      OUTPUT_TEXTILE='true'
       ;;
     w)
       OUTPUT_DOCX='true'
@@ -161,5 +167,17 @@ if $OUTPUT_PDF; then
     --lua-filter=diagram-generator.lua \
     -V colorlinks=true \
     -o ${filename}.pdf \
+    ${srcfile}
+fi
+
+if $OUTPUT_TEXTILE; then
+  docker run \
+    --rm \
+    -i \
+    -v "$(pwd)":/docs \
+    $PANDOC_IMAGE \
+    -s \
+    --from $MARKDOWN_FEATURES \
+    -o ${filename}.textile \
     ${srcfile}
 fi
