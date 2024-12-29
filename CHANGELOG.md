@@ -11,13 +11,16 @@ project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Added support for selecting architectures (e.g. `arm64`)
 - Added "labnotes" template.
 - Added Noto Sans Math font
+- Added Plex Math font
+- Added support for textile ouptut in `pd` script
 
 ### Changed
 
-- Upgraded Pandoc to 3.2.1.
+- Upgraded Pandoc to 3.6.1.
 - Upgraded base image to Debian "Trixie"
 - Upgraded fonts (i.e. Charis SIL, IBM Plex, Source Code Pro, Source Sans 3, and Source Serif 4)
-- *Notes Template*: Updated to align with latest Pandoc Latex template
+- Moved docker provisioning into a heredoc in the Dockerfile
+- *Notes Template*: Updated to align with latest (circa 3.2) Pandoc Latex template
 
 
 ## [20230226]
