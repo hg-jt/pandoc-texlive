@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file. The format
 is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this
 project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [20241228]
 
 ### Added
 
@@ -69,7 +69,8 @@ project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Various font updates.
 - *Notes Template*: Styling tweaks for listings and quotes. 
 
-[Unreleased]: https://github.com/hg-jt/pandoc-texlive/compare/20230226...main
+[Unreleased]: https://github.com/hg-jt/pandoc-texlive/compare/20241228...main
+[20241228]: https://github.com/hg-jt/pandoc-texlive/compare/20230226...20241228
 [20230226]: https://github.com/hg-jt/pandoc-texlive/compare/20220530...20230226
 [20220530]: https://github.com/hg-jt/pandoc-texlive/compare/20220509...20220530
 [20220509]: https://github.com/hg-jt/pandoc-texlive/tree/20220509
