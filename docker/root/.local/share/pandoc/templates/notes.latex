@@ -193,7 +193,7 @@ $endif$
 %% --------------------
 %\usepackage{amsmath,amssymb}
 \newcommand{\square}{□}    % U+25A1
-\newcommand{\boxtimes}{⊠}  % U+22A0
+\newcommand{\boxtimes}{⊠}  % U+22A0 - uses a different box size in most fonts
 
 $if(fontfamily)$
 \usepackage[$for(fontfamilyoptions)$$fontfamilyoptions$$sep$,$endfor$]{$fontfamily$}
@@ -279,7 +279,8 @@ $endif$
 ]{Charis SIL}
 
 \setmonofont[Scale=MatchLowercase]{Source Code Pro}
-\setmathfont{Noto Sans Math}
+%\setmathfont{Noto Sans Math}
+\setmathfont{IBM Plex Math}
 %% --------------------
 %% END custom fonts
 %% --------------------
