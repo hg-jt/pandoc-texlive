@@ -8,8 +8,8 @@ project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- Upgraded Pandoc to 3.6.3
 - *Notes Template*: Switched to IBM Plex Math as the default math font
-
 
 ## [20241228]
 
@@ -23,7 +23,7 @@ project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
-- Upgraded Pandoc to 3.6.1.
+- Upgraded Pandoc to 3.6.1
 - Upgraded base image to Debian "Trixie"
 - Upgraded fonts (i.e. Charis SIL, IBM Plex, Source Code Pro, Source Sans 3, and Source Serif 4)
 - Moved docker provisioning into a heredoc in the Dockerfile
