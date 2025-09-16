@@ -6,10 +6,16 @@ project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- Added IBM Plex Sans Condensed font
+
 ### Changed
 
-- Upgraded Pandoc to 3.6.3
+- Upgraded Pandoc to 3.8
+- Aligned with latest version and packaging of IBM Plex fonts
 - *Notes Template*: Switched to IBM Plex Math as the default math font
+
 
 ## [20241228]
 
