@@ -1,10 +1,13 @@
+# syntax=docker/dockerfile:1
 FROM debian:trixie-slim
 
 ARG TARGETARCH
 
+ARG DEBIAN_FRONTEND=noninteractive
+
 ENV LANG="C.UTF-8"
 
-ENV PANDOC_VERSION=3.8
+ENV PANDOC_VERSION=3.8.2
 
 WORKDIR /docs
 
@@ -81,6 +84,7 @@ done
 # clean up font packages
 cd /
 rm -r /tmp/fonts
+fc-cache
 
 
 # ----------------------------------------
@@ -98,6 +102,7 @@ apt-get purge -y apt-utils curl dialog unzip
 apt-get clean -y
 apt-get autoclean -y
 apt-get autoremove -y
+rm -rf /var/lib/apt/lists/*
 EOF
 
 USER pandoc

@@ -12,9 +12,10 @@ project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
-- Upgraded Pandoc to 3.8
+- Upgraded Pandoc to 3.8.2
 - Aligned with latest version and packaging of IBM Plex fonts
 - *Notes Template*: Switched to IBM Plex Math as the default math font
+- *Notes Template*: Removed page number from first page
 
 
 ## [20241228]

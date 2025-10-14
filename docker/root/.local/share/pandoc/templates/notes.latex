@@ -43,7 +43,6 @@ $endif$
 \usepackage[sf,it,tiny]{titlesec}            % ss/bf titles w/minimal verticalmargins
 \titleformat*{\section}{\large\bfseries\headerfamily}
 \titleformat*{\subsection}{\bfseries\headerfamily}
-\titleformat*{\subsubsection}{\small\bfseries\headerfamily}
 \titleformat{\paragraph}[hang]{\small\itshape\headerfamily}{\theparagraph}{}{}
 
 % alternate nested unordered lists w/bullets and endashes
@@ -113,6 +112,14 @@ $endif$
 %% BEGIN custom headers/footers
 %% --------------------
 \usepackage{fancyhdr}                        % header and footer control
+\fancypagestyle{titlepage}{
+  \fancyhf{}                                   % clear header & footer settings
+  \fancyhead[L]{\headerfamily{\textbf{\THETITLE}}}
+$if(subtitle)$
+  \fancyhead[C]{\headerfamily{\THESUBTITLE}}
+$endif$
+\fancyhead[R]{\headerfamily{\THEDATE}}
+}
 \pagestyle{fancy}                            % set header/footer style
 \fancyhf{}                                   % clear header & footer settings
 \fancyhead[L]{\headerfamily{\textbf{\THETITLE}}}
@@ -121,6 +128,8 @@ $if(subtitle)$
 $endif$
 \fancyhead[R]{\headerfamily{\textit{\THEDATE}}}
 \fancyfoot[C]{\thepage}
+\thispagestyle{titlepage} % skip footer for first page
+
 %% --------------------
 %% END customer headers/footers
 %% --------------------
@@ -167,7 +176,8 @@ $if(listings)$
 \lstset{
     language=python,
     upquote=true,
-    keywordstyle=\codefamily\bfseries,
+    %keywordstyle=\codefamily\bfseries,
+    %keywordstyle=\codefamily,
     %stringstyle=\color{red},
     morecomment=[s]{"""}{"""},
     morecomment=[s]{'''}{'''},
@@ -279,7 +289,6 @@ $endif$
 ]{Charis SIL}
 
 \setmonofont[Scale=MatchLowercase]{Source Code Pro}
-%\setmathfont{Noto Sans Math}
 \setmathfont{IBM Plex Math}
 %% --------------------
 %% END custom fonts
@@ -342,6 +351,8 @@ $if(mathspec)$
 $else$
   \setmathfont[$for(mathfontoptions)$$mathfontoptions$$sep$,$endfor$]{$mathfont$}
 $endif$
+$else$
+
 $endif$
 $if(CJKmainfont)$
   \ifXeTeX
