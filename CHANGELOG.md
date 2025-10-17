@@ -9,6 +9,16 @@ project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Changed
 
 - Upgraded base image to Debian "Forky"
+  + This includes an upgrade to TexLive 2025
+
+- *Notes Template*: Moved most customizations to partials and aligned with
+  template from Pandoc 3.8.2
+
+- Updated examples
+
+### Removed
+
+- Removed "betterdefault" template
 
 
 ## [20251015]

@@ -1,0 +1,79 @@
+%% custom-fonts.latex --- Custom font partial.
+
+%% --------------------
+%% BEGIN custom fonts
+%% --------------------
+%\usepackage{amsmath,amssymb}
+
+\let\oldsquare\square
+%\newcommand{\square}{□}    % U+25A1
+\renewcommand{\square}{\mathsf{□}}
+
+\let\oldboxtimes\boxtimes
+%\newcommand{\boxtimes}{⊠}  % U+22A0 - uses a different box size in most fonts
+\renewcommand{\boxtimes}{\mathsf{⊠}}
+
+\usepackage{fontspec}   % enable fontspec (it should already be implicitly loaded)
+
+\defaultfontfeatures{Scale=MatchLowercase}
+%  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+
+% define custom font families
+$if(headerfamily)$
+\newfontfamily{\headerfamily}[$for(headerfamilyoptions)$$headerfamilyoptions$$sep$,$endfor$]{$headerfamily$}
+$else$
+\newfontfamily{\headerfamily}[
+  BoldFont={* SemiBold},
+  BoldItalicFont={* SemiBold Italic}
+]{Libre Franklin}
+$endif$
+
+$if(codefont)$
+\newfontfamily{\codefamily}[$for(codefontoptions)$$codefontoptions$$sep$,$endfor$]{$codefont$}
+$else$
+\newfontfamily{\codefamily}[
+  Scale=MatchLowercase,    % also tried 0.8462 and 1
+  ItalicFont={* Italic},
+  BoldFont={* Semibold},
+  BoldItalicFont={* Semibold Italic},
+  Ligatures={NoCommon, NoDiscretionary, NoHistoric, NoRequired, NoContextual},
+  Numbers={SlashedZero},
+  ItalicFeatures={
+    CharacterVariant={1:1} % double-story a (cv01)
+  }
+]{Source Code Pro}
+
+\newfontfamily{\inlinecodefamily}[
+  Scale=MatchLowercase,    % also tried 0.8462
+  BoldFont={* Semibold},
+  BoldItalicFont={* Semibold Italic},
+  Ligatures={NoCommon, NoDiscretionary, NoHistoric, NoRequired, NoContextual},
+  Numbers={SlashedZero}
+]{Source Code Pro}
+$endif$
+
+% set default fonts
+\setsansfont[
+  BoldFont={*-Medium},
+  BoldItalicFont={*-Medium Italic}
+]{IBM Plex Sans}
+
+\setromanfont[
+  Ligatures=TeX,
+  Scale=1,
+  BoldFont={* Bold},
+  ItalicFont={* Italic},
+  BoldItalicFont={* Bold Italic}
+]{Charis SIL}
+
+\setmonofont[Scale=MatchLowercase]{Source Code Pro}
+\setmathfont{IBM Plex Math}
+%% --------------------
+%% END custom fonts
+%% --------------------
+
+$if(mainfont)$
+  \setmainfont[$for(mainfontoptions)$$mainfontoptions$$sep$,$endfor$]{$mainfont$}
+$else$
+  \renewcommand{\familydefault}{\sfdefault} % ss by default
+$endif$

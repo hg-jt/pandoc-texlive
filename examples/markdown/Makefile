@@ -1,17 +1,20 @@
 PANDOC_IMAGE=ghcr.io/hg-jt/pandoc-texlive:main
 PANDOC=@docker run --rm -t -v `pwd`:/docs $(PANDOC_IMAGE)
-PANDOCOPT=--template=notes -s --pdf-engine=xelatex --no-highlight --listings
+PANDOCOPT=--template=notes -s --pdf-engine=xelatex --syntax-highlighting=idiomatic
 
 .PHONY: build clean help
 .DEFAULT_GOAL := help
 
-build: simpledoc.pdf simpledoc2.pdf simpledoc-with-code.pdf  ## build PDFs
+build: simpledoc.pdf simpledoc2.pdf simpledoc3.pdf simpledoc-with-code.pdf  ## build PDFs
 
 simpledoc.pdf: simpledoc.md
 	$(PANDOC) simpledoc.md $(PANDOCOPT) -o simpledoc.pdf
 
 simpledoc2.pdf: simpledoc2.md
 	$(PANDOC) simpledoc2.md $(PANDOCOPT) -o simpledoc2.pdf
+
+simpledoc3.pdf: simpledoc3.md
+	$(PANDOC) simpledoc3.md $(PANDOCOPT) -o simpledoc3.pdf
 
 simpledoc-with-code.pdf: simpledoc-with-code.md
 	$(PANDOC) simpledoc-with-code.md $(PANDOCOPT) -o simpledoc-with-code.pdf

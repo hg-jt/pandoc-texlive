@@ -1,0 +1,184 @@
+%% preamble.latex --- LaTeX template partial for modernizing the default Pandoc Latex template.
+%%
+%% This partial is split into the following logical blocks:
+%%
+%%   - custom document configuration
+%%   - hacks
+%%   - custom title
+%%   - custom headers/footers
+%%   - pretty source code
+
+%% ----------------------------------------
+%% BEGIN custom document configuration
+%% ----------------------------------------
+\usepackage[none]{hyphenat}                  % disable wrapping w/hyphens
+
+$if(geometry)$
+\usepackage[$for(geometry)$$geometry$$sep$,$endfor$]{geometry}
+$else$
+\usepackage[
+  includeheadfoot,
+  margin=1.5cm
+]{geometry}                                  % smaller margins
+$endif$
+
+\frenchspacing                               % disable additional space after a period
+\usepackage[parfill]{parskip}                % block paragraphs
+\usepackage[sf,it,tiny]{titlesec}            % ss/bf titles w/minimal verticalmargins
+\titleformat*{\section}{\large\bfseries\headerfamily}
+\titleformat*{\subsection}{\bfseries\headerfamily}
+%\titleformat*{\subsubsection}{\small\bfseries\headerfamily}
+\titleformat*{\subsubsection}{\small\bfseries\itshape\headerfamily}
+\titleformat{\paragraph}[hang]{\small\itshape\headerfamily}{\theparagraph}{}{}
+
+% alternate nested unordered lists w/bullets and endashes
+\renewcommand{\labelitemii}{--}
+\renewcommand{\labelitemiii}{\textbullet}
+\renewcommand{\labelitemiv}{--}
+
+\usepackage{mdframed}
+\global\mdfdefinestyle{blockquote}{
+  topline=false,
+  rightline=false,
+  bottomline=false,
+  leftline=false,
+  backgroundcolor=gray!20
+}
+
+\usepackage{etoolbox}
+\patchcmd{\quote}{\rightmargin}{\leftmargin 0em \rightmargin}{}{}  % reduce quote indent
+%\AtBeginEnvironment{quote}{\itshape\sffamily}  % quote block styling
+\AtBeginEnvironment{quote}{\sffamily\noindent\begin{mdframed}[style=blockquote]}
+\AtEndEnvironment{quote}{\end{mdframed}}
+\AtBeginEnvironment{minipage}{\sffamily}      % table header styling
+%% ----------------------------------------
+%% END custom document configuration
+%% ----------------------------------------
+
+
+%% ----------------------------------------
+%% BEGIN hacks
+%% ----------------------------------------
+% preserve @macros and define new global macros that expose the title, subtitle,
+% and date outside of the maketitle command
+\makeatletter
+  \def \title#1{\gdef \@title{#1} \gdef \THETITLE{#1}}
+  \def \subtitle#1{\gdef \@subtitle{#1} \gdef \THESUBTITLE{#1}}
+  \def \author#1{\gdef \@author{#1} \gdef \THEAUTHOR{#1}}
+  \def \date#1{\gdef \@date{#1} \gdef \THEDATE{#1}}
+\makeatother
+%% ----------------------------------------
+%% END hacks
+%% ----------------------------------------
+
+
+%% ----------------------------------------
+%% BEGIN custom title
+%% ----------------------------------------
+\usepackage{titling}
+\pretitle{\begin{center}\LARGE\headerfamily\bfseries}
+\posttitle{\par\end{center}}
+
+% comment out if you want to include a by line in the title block
+\preauthor{}
+\postauthor{}
+
+% comment out if you want to include a date in the title block
+\predate{}
+\postdate{}
+
+% raise the title up (negative value). Default is 0.
+\setlength{\droptitle}{-10em}
+%% ----------------------------------------
+%% END custom title
+%% ----------------------------------------
+
+
+%% ----------------------------------------
+%% BEGIN custom headers/footers
+%% ----------------------------------------
+\usepackage{fancyhdr}                        % header and footer control
+\fancypagestyle{titlepage}{
+  \fancyhf{}                                   % clear header & footer settings
+  \fancyhead[L]{\headerfamily{\textbf{\THETITLE}}}
+$if(subtitle)$
+  \fancyhead[C]{\headerfamily{\THESUBTITLE}}
+$endif$
+\fancyhead[R]{\headerfamily{\THEDATE}}
+}
+\pagestyle{fancy}                            % set header/footer style
+\fancyhf{}                                   % clear header & footer settings
+\fancyhead[L]{\headerfamily{\textbf{\THETITLE}}}
+$if(subtitle)$
+\fancyhead[C]{\headerfamily{\THESUBTITLE}}
+$endif$
+\fancyhead[R]{\headerfamily{\textit{\THEDATE}}}
+\fancyfoot[C]{\thepage}
+\thispagestyle{titlepage} % skip footer for first page
+
+%% ----------------------------------------
+%% END customer headers/footers
+%% ----------------------------------------
+
+
+%% ----------------------------------------
+%% BEGIN pretty source code
+%% ----------------------------------------
+$if(listings)$
+\usepackage{listings}
+%\newcommand{\passthrough}[1]{#1}
+\lstset{defaultdialect=[5.3]Lua}
+\lstset{defaultdialect=[x86masm]Assembler}
+
+\usepackage{color}
+\usepackage{xcolor}
+\usepackage[font=sf]{caption}
+\captionsetup{labelformat=empty}             % Remove "Figure" & "Listing" prefix
+
+\usepackage{calc}
+
+%\renewcommand{\ttdefault}{\codefamily}
+
+\lstset{
+    upquote=true,
+    columns=fullflexible,
+    keepspaces=true,
+    showspaces=false,
+    showtabs=false,
+    showstringspaces=false,
+    breaklines=true,
+    %breakatwhitespace=true,
+    literate={*}{*}1                         % fix awkwardly low asterix
+             {-}{-}1,                        % fix copyability of dashes
+    basicstyle=\small\codefamily,
+    identifierstyle=\codefamily,
+    %keywordstyle=\codefamily\bfseries,
+    keywordstyle=\codefamily,
+    commentstyle=\color{gray},
+    xleftmargin=.25cm,
+    %escapeinside={(*}{*)}                   % allow latex code in listing
+}
+
+\lstset{
+    language=python,
+    upquote=true,
+    %keywordstyle=\codefamily\bfseries,
+    %keywordstyle=\codefamily,
+    %stringstyle=\color{red},
+    morecomment=[s]{"""}{"""},
+    morecomment=[s]{'''}{'''},
+    commentstyle=\color{gray}\itshape
+}
+
+%% https://isocpp.org/wiki/faq/misc-environmental-issues#latex-macros
+\newcommand{\CC}{C\nolinebreak\hspace{-.05em}\raisebox{.4ex}{\tiny\bf +}\nolinebreak\hspace{-.10em}\raisebox{.4ex}{\tiny\bf +}}
+%\def\CC{{C\nolinebreak[4]\hspace{-.05em}\raisebox{.4ex}{\tiny\bf ++}}}
+
+% separate lstinline and lstlistings
+\makeatletter
+\lst@AddToHook{TextStyle}{\let\lst@basicstyle\inlinecodefamily\selectfont}
+\makeatother
+$endif$
+%% ----------------------------------------
+%% END pretty source code
+%% ----------------------------------------
