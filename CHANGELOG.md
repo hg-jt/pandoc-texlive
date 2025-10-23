@@ -16,6 +16,9 @@ project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Updated examples
 
+- Upgraded Charis SIL font from 6.200 to 7.000
+  + The font was renamed to "Charis"
+
 ### Removed
 
 - Removed "betterdefault" template

@@ -6,7 +6,7 @@ PDF_ENGINE='xelatex'
 PDF_ENGINE_OPT=-shell-escape  #  -output-driver="xdvipdfmx -z 0"
 OUTPUT_DOCX='false'
 OUTPUT_HTML='false'
-OUTPUT_PDF='false'
+OUTPUT_PDF='true'
 OUTPUT_TEX='false'
 OUTPUT_TEXTILE='false'
 MARKDOWN_FEATURES='markdown+pipe_tables+table_captions+raw_tex+strikeout+task_lists'
@@ -38,7 +38,7 @@ OPTIONS
 
      -H   Generate HTML output.
 
-     -p   Generate PDF output.
+     -p   Generate PDF output. Enabled by default.
 
      -t   Generate tex output.
 
@@ -81,10 +81,6 @@ while getopts ':hHptTw' opt; do
   esac
 done
 
-# set default options if none provided
-if [ -z "$name" ]; then
-  OUTPUT_PDF='true'
-fi
 
 # get filename as positional arg
 srcfile=${@:$OPTIND:1}

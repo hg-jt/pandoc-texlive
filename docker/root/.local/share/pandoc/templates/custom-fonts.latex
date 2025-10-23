@@ -64,7 +64,7 @@ $endif$
   BoldFont={* Bold},
   ItalicFont={* Italic},
   BoldItalicFont={* Bold Italic}
-]{Charis SIL}
+]{Charis}
 
 \setmonofont[Scale=MatchLowercase]{Source Code Pro}
 \setmathfont{IBM Plex Math}
